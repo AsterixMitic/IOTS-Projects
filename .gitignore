@@ -1,0 +1,66 @@
+.agents
+.github
+
+# Environment and secrets
+.env
+.env.*
+**/.env
+project-one/.env
+
+# PostgreSQL client credentials
+.pgpass
+.pgpass.conf
+
+# Node
+node_modules/
+
+# Rust/Cargo
+target/
+**/target/
+
+# .NET
+bin/
+obj/
+
+# Build artifacts and caches
+*.log
+*.cache
+.cache/
+
+# Editor / IDE
+.vscode/
+.idea/
+*.iml
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker overrides and local env
+docker-compose.override.yml
+.envrc
+
+# Secrets and keys
+secrets.*
+*.key
+*.pem
+*.p12
+*.jks
+
+# Project-specific ignores
+# local dataset cache and CSVs
+project-one/db/.cache/
+project-one/db/.cache/*
+# local env files and examples
+project-one/.env
+project-one/.env.local
+
+# Build outputs from services
+project-one/**/bin/
+project-one/**/obj/
+project-one/**/target/
+project-one/**/node_modules/
