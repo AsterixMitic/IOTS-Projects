@@ -214,6 +214,7 @@ This currently starts:
 - PostgreSQL database
 - REST service (C# / ASP.NET Core) on port 5000
 - gRPC service (Go) on port 50051
+- GraphQL service (Rust) on port 8000
 
 ### REST testing quick links
 
@@ -226,6 +227,12 @@ This currently starts:
 - Proto definitions: `grpc-service-go/proto/iot/v1/readings.proto`
 - Service documentation: `grpc-service-go/README.md`
 
+### GraphQL testing
+
+- GraphQL Endpoint: `http://localhost:8000/graphql`
+- Service documentation: `graphql-service-rust/README.md`
+- Schema exploration available via GraphQL playground tools
+
 ---
 
 # Active Service Ports
@@ -235,12 +242,13 @@ This currently starts:
 | PostgreSQL | 5432 |
 | REST API | 5000 |
 | gRPC service | 50051 |
+| GraphQL API | 8000 |
 
 ---
 
 # Current runtime note
 
-The current `docker-compose.yml` starts PostgreSQL, REST service, and gRPC service. Prometheus and Grafana sections above describe the planned observability phase and are not active yet.
+The current `docker-compose.yml` starts PostgreSQL, REST service, gRPC service, and GraphQL service. Prometheus and Grafana sections above describe the planned observability phase and are not active yet.
 
 ---
 

@@ -1,0 +1,1 @@
+﻿{"query":"{ listSensorTypes { id sensorCode sensorName unit } }"}
