@@ -270,6 +270,28 @@ Results and analysis can be found inside:
 docs/benchmarks.md
 ```
 
+## k6 load tests
+
+The load-test scripts live in `load-tests/k6/`:
+
+- `01-ingestion.js`
+- `02-selective-monitoring.js`
+- `03-historical-aggregation.js`
+
+They target the live compose services by default:
+
+- REST: `http://host.docker.internal:5000`
+- GraphQL: `http://host.docker.internal:8000/graphql`
+- gRPC: `host.docker.internal:50051`
+
+You can override them with `REST_BASE_URL`, `GRAPHQL_URL`, `GRPC_ADDR`, `LOADTEST_RATE`, and `LOADTEST_DURATION`.
+
+Example:
+
+```bash
+docker run --rm -i -v "$(pwd):/work" -w /work grafana/k6 run load-tests/k6/01-ingestion.js
+```
+
 ---
 
 # Future Improvements
