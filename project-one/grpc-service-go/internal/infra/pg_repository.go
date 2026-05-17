@@ -7,9 +7,10 @@ import (
 	"strings"
 	"time"
 
+	"grpc-service-go/internal/domain"
+
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"grpc-service-go/internal/domain"
 )
 
 type PgxRepository struct {
