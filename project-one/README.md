@@ -14,7 +14,7 @@ The project starts with a single PostgreSQL container defined in `docker-compose
 docker compose up -d postgres
 ```
 
-The database schema is initialized from migrations in `project-one/db/` (run_migrations.sh). Use the fast import flow to load the UCI Air Quality dataset into the database.
+Schema setup is migration-based. After starting PostgreSQL, run migrations and then load the UCI Air Quality dataset.
 
 ```bash
 # apply migrations and import CSV
@@ -51,7 +51,7 @@ bash db/import_via_copy.sh path/to/AirQualityUCI.csv
 
 # Architecture Overview
 
-The project consists of three independent microservices:
+Target architecture consists of three independent microservices:
 
 ```text
 Client
@@ -64,6 +64,7 @@ Client
 ```
 
 Each service exposes similar business functionality while using a different communication protocol and technology stack.
+At the current stage, the REST service is implemented first and wired to PostgreSQL.
 
 ---
 
@@ -111,6 +112,7 @@ project-one/
 ## REST
 
 Implemented using ASP.NET Core in C#.
+Current implementation uses controller-based endpoints with EF Core over PostgreSQL.
 
 ### Characteristics
 
@@ -150,9 +152,9 @@ Implemented using Rust.
 
 # Monitoring & Observability
 
-## Prometheus
+## Prometheus (planned)
 
-Prometheus is used for:
+Prometheus will be used for:
 
 - Request counting
 - Response time metrics
@@ -170,9 +172,9 @@ Example metrics:
 
 ---
 
-## Grafana
+## Grafana (planned)
 
-Grafana is used for visualization and dashboard creation.
+Grafana will be used for visualization and dashboard creation.
 
 Dashboards may include:
 
@@ -201,58 +203,36 @@ Required software:
 
 # Running with Docker Compose
 
-From the root project directory:
+From the `project-one/` directory:
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
-This starts:
+This currently starts:
 
-- REST service
-- gRPC service
-- GraphQL service
-- Prometheus
-- Grafana
+- PostgreSQL database
+- REST service (C# / ASP.NET Core)
+
+### REST testing quick links
+
+- OpenAPI JSON: `http://localhost:5000/openapi/v1.json`
+- Postman assets: `rest-service-csharp/postman/`
 
 ---
 
-# Service Ports
+# Active Service Ports
 
 | Service | Port |
 |---|---|
+| PostgreSQL | 5432 |
 | REST API | 5000 |
-| gRPC Service | 5001 |
-| GraphQL API | 5002 |
-| Prometheus | 9090 |
-| Grafana | 3000 |
 
 ---
 
-# Grafana Access
+# Current runtime note
 
-Default Grafana credentials:
-
-```text
-Username: admin
-Password: admin
-```
-
-Grafana URL:
-
-```text
-http://localhost:3000
-```
-
----
-
-# Prometheus Access
-
-Prometheus URL:
-
-```text
-http://localhost:9090
-```
+The current `docker-compose.yml` starts PostgreSQL and the REST service. Prometheus and Grafana sections above describe the planned observability phase and are not active yet.
 
 ---
 

@@ -1,0 +1,239 @@
+{
+  "info": {
+    "_postman_id": "8f00acfd-f0e7-4ebb-8900-2f7f04f2ed15",
+    "name": "RestService API Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Smoke and basic functional tests for project-one REST service."
+  },
+  "item": [
+    {
+      "name": "1) Get OpenAPI",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/openapi/v1.json"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const body = pm.response.json();",
+              "pm.test('OpenAPI shape is valid', function () {",
+              "    pm.expect(body).to.have.property('openapi');",
+              "    pm.expect(body).to.have.property('paths');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2) Get Sensor Types",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/sensor-types"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const data = pm.response.json();",
+              "pm.test('Sensor types returned', function () {",
+              "    pm.expect(data).to.be.an('array').that.is.not.empty;",
+              "});",
+              "",
+              "const preferredCode = data.find(s => s.code === 'temperature')?.code || data[0].code;",
+              "pm.environment.set('aggregateSensorCode', preferredCode);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "3) Get Readings (paged)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/readings?deviceId={{deviceId}}&limit={{limit}}&offset={{offset}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const data = pm.response.json();",
+              "pm.test('Readings returned', function () {",
+              "    pm.expect(data).to.be.an('array').that.is.not.empty;",
+              "});",
+              "",
+              "pm.environment.set('readingId', data[0].id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "4) Get Reading By ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/readings/{{readingId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const data = pm.response.json();",
+              "pm.test('Reading contains requested id', function () {",
+              "    pm.expect(data.id).to.eql(Number(pm.environment.get('readingId')));",
+              "});",
+              "",
+              "pm.test('Reading has values object', function () {",
+              "    pm.expect(data.values).to.be.an('object');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "5) Create Reading",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const note = `postman-${Date.now()}`;",
+              "pm.environment.set('readingNote', note);",
+              "pm.environment.set('recordedAt', new Date().toISOString());"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 201', function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "const data = pm.response.json();",
+              "pm.test('Created response contains id', function () {",
+              "    pm.expect(data).to.have.property('id');",
+              "});",
+              "",
+              "pm.environment.set('createdReadingId', data.id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"deviceId\": {{deviceId}},\n  \"recordedAt\": \"{{recordedAt}}\",\n  \"notes\": \"{{readingNote}}\",\n  \"values\": {\n    \"temperature\": 22.4,\n    \"relative_humidity\": 45.1,\n    \"co_gt\": 0.7\n  }\n}"
+        },
+        "url": "{{baseUrl}}/api/readings"
+      }
+    },
+    {
+      "name": "6) Get Created Reading By ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/readings/{{createdReadingId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const data = pm.response.json();",
+              "pm.test('Reading id matches created id', function () {",
+              "    pm.expect(data.id).to.eql(Number(pm.environment.get('createdReadingId')));",
+              "});",
+              "",
+              "pm.test('Reading note matches generated note', function () {",
+              "    pm.expect(data.notes).to.eql(pm.environment.get('readingNote'));",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "7) Get Aggregate",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/readings/aggregate?sensorCode={{aggregateSensorCode}}&bucketMinutes={{bucketMinutes}}&deviceId={{deviceId}}&from={{aggregateFrom}}&to={{aggregateTo}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const data = pm.response.json();",
+              "pm.test('Aggregate returns array', function () {",
+              "    pm.expect(data).to.be.an('array');",
+              "});",
+              "",
+              "if (data.length > 0) {",
+              "    pm.test('Aggregate row has expected fields', function () {",
+              "        pm.expect(data[0]).to.have.property('bucketStart');",
+              "        pm.expect(data[0]).to.have.property('avgValue');",
+              "        pm.expect(data[0]).to.have.property('minValue');",
+              "        pm.expect(data[0]).to.have.property('maxValue');",
+              "        pm.expect(data[0]).to.have.property('samples');",
+              "    });",
+              "}"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "variable": []
+}

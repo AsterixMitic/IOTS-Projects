@@ -17,7 +17,7 @@ docker exec -it project-one-postgres psql -U iot_user -d iot_project
 ## Import the dataset
 
 Use the UCI Air Quality CSV (`AirQualityUCI.csv`) and map `Date` + `Time` into `readings.recorded_at`.
-Store the per-row measurements in `reading_values` using the `sensor_types` catalog created by the init script.
+Store the per-row measurements in `reading_values` using the `sensor_types` catalog created by migration scripts.
 
 A repeatable, fast import flow uses a staging table + server-side COPY + SQL transform. Migrations are provided in `db/0001_schema_and_staging.up.sql` and `db/0002_transform.up.sql`.
 

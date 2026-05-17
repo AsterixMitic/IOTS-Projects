@@ -1,0 +1,42 @@
+@RestService_HostAddress = http://localhost:5000
+@deviceId = 1
+@readingId = 9357
+@from = 2004-03-10T18:00:00Z
+@to = 2004-03-11T18:00:00Z
+@bucketMinutes = 60
+@sensorCode = temperature
+
+### OpenAPI
+GET {{RestService_HostAddress}}/openapi/v1.json
+Accept: application/json
+
+### Sensor types
+GET {{RestService_HostAddress}}/api/sensor-types
+Accept: application/json
+
+### Readings (paged + filtered)
+GET {{RestService_HostAddress}}/api/readings?deviceId={{deviceId}}&limit=10&offset=0
+Accept: application/json
+
+### Reading by id
+GET {{RestService_HostAddress}}/api/readings/{{readingId}}
+Accept: application/json
+
+### Aggregate
+GET {{RestService_HostAddress}}/api/readings/aggregate?sensorCode={{sensorCode}}&bucketMinutes={{bucketMinutes}}&deviceId={{deviceId}}&from={{from}}&to={{to}}
+Accept: application/json
+
+### Create reading
+POST {{RestService_HostAddress}}/api/readings
+Content-Type: application/json
+
+{
+  "deviceId": {{deviceId}},
+  "recordedAt": "2026-05-17T00:00:00Z",
+  "notes": "http file sample",
+  "values": {
+    "temperature": 22.4,
+    "relative_humidity": 45.1,
+    "co_gt": 0.7
+  }
+}
