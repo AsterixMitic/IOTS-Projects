@@ -1,0 +1,96 @@
+syntax = "proto3";
+
+package iot.v1;
+
+option go_package = "grpc-service-go/gen/go/iot/v1;iotv1";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+service ReadingsService {
+  rpc ListSensorTypes(google.protobuf.Empty) returns (ListSensorTypesResponse);
+  rpc ListReadings(ListReadingsRequest) returns (ListReadingsResponse);
+  rpc GetReading(GetReadingRequest) returns (GetReadingResponse);
+  rpc CreateReading(CreateReadingRequest) returns (CreateReadingResponse);
+  rpc AggregateReadings(AggregateReadingsRequest) returns (AggregateReadingsResponse);
+}
+
+message SensorType {
+  int64 id = 1;
+  string code = 2;
+  string label = 3;
+  string unit = 4;
+}
+
+message ListSensorTypesResponse {
+  repeated SensorType sensor_types = 1;
+}
+
+message ListReadingsRequest {
+  optional int64 device_id = 1;
+  optional google.protobuf.Timestamp from = 2;
+  optional google.protobuf.Timestamp to = 3;
+  repeated string sensor_codes = 4;
+  int32 limit = 5;
+  int32 offset = 6;
+}
+
+message ReadingSummary {
+  int64 id = 1;
+  int64 device_id = 2;
+  google.protobuf.Timestamp recorded_at = 3;
+  map<string, double> values = 4;
+}
+
+message ListReadingsResponse {
+  repeated ReadingSummary readings = 1;
+}
+
+message GetReadingRequest {
+  int64 id = 1;
+}
+
+message ReadingDetail {
+  int64 id = 1;
+  int64 device_id = 2;
+  google.protobuf.Timestamp recorded_at = 3;
+  string source_date = 4;
+  string source_time = 5;
+  string notes = 6;
+  map<string, double> values = 7;
+}
+
+message GetReadingResponse {
+  ReadingDetail reading = 1;
+}
+
+message CreateReadingRequest {
+  int64 device_id = 1;
+  google.protobuf.Timestamp recorded_at = 2;
+  string notes = 3;
+  map<string, double> values = 4;
+}
+
+message CreateReadingResponse {
+  int64 id = 1;
+}
+
+message AggregateReadingsRequest {
+  string sensor_code = 1;
+  int32 bucket_minutes = 2;
+  optional int64 device_id = 3;
+  optional google.protobuf.Timestamp from = 4;
+  optional google.protobuf.Timestamp to = 5;
+}
+
+message AggregatePoint {
+  google.protobuf.Timestamp bucket_start = 1;
+  double avg_value = 2;
+  double min_value = 3;
+  double max_value = 4;
+  int64 samples = 5;
+}
+
+message AggregateReadingsResponse {
+  repeated AggregatePoint points = 1;
+}

@@ -35,5 +35,20 @@ services:
       - "5000:8080"
     restart: unless-stopped
 
+  grpc-service-go:
+    build:
+      context: ./grpc-service-go
+      dockerfile: Dockerfile
+    container_name: project-one-grpc-service-go
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?sslmode=disable
+      - GRPC_PORT=50051
+    ports:
+      - "50051:50051"
+    restart: unless-stopped
+
 volumes:
   postgres_data:
