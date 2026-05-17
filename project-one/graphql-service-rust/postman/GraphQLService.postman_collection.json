@@ -1,0 +1,214 @@
+{
+  "info": {
+    "_postman_id": "c7ed9d54-5d0f-4a0c-95c0-9f1a6d4b6f55",
+    "name": "GraphQLService API Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "GraphQL smoke tests for project-one with response-size logging in the Postman Console."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const size = Number(pm.response.responseSize ?? pm.response.headers.get('Content-Length') ?? 0);",
+          "console.log(`[SIZE] ${pm.info.requestName}: ${size} bytes`);",
+          "pm.environment.set('lastResponseSize', String(size));"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "1) Get Sensor Types",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"query\": \"{ listSensorTypes { id sensorCode sensorName unit } }\"\n}"
+        },
+        "url": "{{graphqlUrl}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const data = pm.response.json();",
+              "pm.test('Sensor types returned', function () {",
+              "    pm.expect(data.data.listSensorTypes).to.be.an('array').that.is.not.empty;",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2) Get Readings (paged)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"query\": \"{ listReadings(limit: {{limit}}, offset: {{offset}}) { id deviceId sensorCode sensorName measuredValue measuredAt createdAt } }\"\n}"
+        },
+        "url": "{{graphqlUrl}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const data = pm.response.json();",
+              "pm.test('Readings returned', function () {",
+              "    pm.expect(data.data.listReadings).to.be.an('array');",
+              "});",
+              "",
+              "if (data.data.listReadings.length > 0) {",
+              "    pm.environment.set('readingId', data.data.listReadings[0].id);",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "3) Create Reading",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.environment.set('recordedAt', new Date().toISOString());"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const data = pm.response.json();",
+              "pm.test('Created response contains id', function () {",
+              "    pm.expect(data.data.createReading).to.have.property('id');",
+              "});",
+              "",
+              "pm.environment.set('createdReadingId', data.data.createReading.id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"query\": \"mutation { createReading(deviceId: \\\"{{deviceId}}\\\", sensorCode: \\\"co_gt\\\", measuredValue: 12.3, measuredAt: \\\"{{recordedAt}}\\\") { id deviceId sensorCode measuredValue measuredAt createdAt } }\"\n}"
+        },
+        "url": "{{graphqlUrl}}"
+      }
+    },
+    {
+      "name": "4) Get Reading By ID",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"query\": \"{ getReading(id: {{createdReadingId}}) { id deviceId sensorCode sensorName measuredValue measuredAt createdAt } }\"\n}"
+        },
+        "url": "{{graphqlUrl}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const data = pm.response.json();",
+              "pm.test('Reading id matches created id', function () {",
+              "    pm.expect(data.data.getReading.id).to.eql(Number(pm.environment.get('createdReadingId')));",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "5) Get Aggregate",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"query\": \"{ aggregateReadings(sensorCode: \\\"{{aggregateSensorCode}}\\\", startDate: \\\"{{aggregateFrom}}\\\", endDate: \\\"{{aggregateTo}}\\\") { sensorCode measuredAt avgValue minValue maxValue count } }\"\n}"
+        },
+        "url": "{{graphqlUrl}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const data = pm.response.json();",
+              "pm.test('Aggregate returns array', function () {",
+              "    pm.expect(data.data.aggregateReadings).to.be.an('array');",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "variable": []
+}

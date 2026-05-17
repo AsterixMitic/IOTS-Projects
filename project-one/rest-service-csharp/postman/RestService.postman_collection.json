@@ -3,8 +3,21 @@
     "_postman_id": "8f00acfd-f0e7-4ebb-8900-2f7f04f2ed15",
     "name": "RestService API Tests",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "Smoke and basic functional tests for project-one REST service."
+    "description": "Smoke tests for project-one REST service, including response-size logging in the Postman Console."
   },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const size = Number(pm.response.responseSize ?? pm.response.headers.get('Content-Length') ?? 0);",
+          "console.log(`[SIZE] ${pm.info.requestName}: ${size} bytes`);",
+          "pm.environment.set('lastResponseSize', String(size));"
+        ]
+      }
+    }
+  ],
   "item": [
     {
       "name": "1) Get OpenAPI",
