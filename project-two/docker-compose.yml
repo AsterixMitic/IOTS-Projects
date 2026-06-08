@@ -37,6 +37,63 @@ services:
       - kafka_data:/tmp/kraft-combined-logs
     restart: unless-stopped
 
+  ingestion:
+    build:
+      context: ./services/ingestion
+    container_name: project-two-ingestion
+    env_file:
+      - .env
+    environment:
+      SERVICE_NAME: ingestion
+      PORT: 3000
+      BROKER_MODE: ${BROKER_MODE:-mqtt}
+      BROKER_URL: ${BROKER_URL:-}
+      MQTT_TOPIC: ${MQTT_TOPIC:-iot/readings}
+      KAFKA_TOPIC: ${KAFKA_TOPIC:-iot.readings}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mosquitto
+      - kafka
+    restart: unless-stopped
+
+  storage:
+    build:
+      context: ./services/storage
+    container_name: project-two-storage
+    env_file:
+      - .env
+    environment:
+      BROKER_MODE: ${BROKER_MODE:-mqtt}
+      DATABASE_URL: ${DATABASE_URL:-Host=postgres;Port=5432;Database=iot_events;Username=iot;Password=change-me}
+      ConnectionStrings__Postgres: ${POSTGRES_CONNECTION_STRING:-Host=postgres;Port=5432;Database=iot_events;Username=iot;Password=change-me}
+      ASPNETCORE_URLS: http://+:8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  analytics:
+    build:
+      context: ./services/analytics
+    container_name: project-two-analytics
+    env_file:
+      - .env
+    environment:
+      SERVICE_NAME: analytics
+      PORT: 3001
+      BROKER_MODE: ${BROKER_MODE:-mqtt}
+      BROKER_URL: ${BROKER_URL:-}
+      WINDOW_SECONDS: ${WINDOW_SECONDS:-10}
+      ALERT_THRESHOLD: ${ALERT_THRESHOLD:-50}
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mosquitto
+      - kafka
+    restart: unless-stopped
+
 volumes:
   postgres_data:
   mosquitto_data:
