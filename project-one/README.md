@@ -152,7 +152,7 @@ Implemented using Rust.
 
 # Monitoring & Observability
 
-## Prometheus (planned)
+## Prometheus
 
 Prometheus will be used for:
 
@@ -172,7 +172,7 @@ Example metrics:
 
 ---
 
-## Grafana (planned)
+## Grafana
 
 Grafana will be used for visualization and dashboard creation.
 
@@ -248,7 +248,35 @@ This currently starts:
 
 # Current runtime note
 
-The current `docker-compose.yml` starts PostgreSQL, REST service, gRPC service, and GraphQL service. Prometheus and Grafana sections above describe the planned observability phase and are not active yet.
+The current `docker-compose.yml` starts PostgreSQL, REST service, gRPC service, GraphQL service, cAdvisor, Prometheus, and Grafana.
+
+## Container CPU and RAM usage
+
+Use `docker stats` for a live terminal view:
+
+```bash
+docker stats project-one-postgres project-one-rest-service-csharp project-one-grpc-service-go project-one-graphql-service-rust
+```
+
+For historical charts:
+
+- cAdvisor: `http://localhost:8085`
+- Prometheus: `http://localhost:9090`
+- Grafana: `http://localhost:3000` (admin / admin)
+
+In this Docker Desktop environment, cAdvisor exposes the Docker runtime cgroup, so Grafana shows the runtime's CPU/RAM trend while `docker stats` gives the exact per-container view.
+
+## Validation checklist
+
+1. `docker compose ps` shows PostgreSQL, REST, gRPC, GraphQL, cAdvisor, Prometheus, and Grafana as running.
+2. `docker stats --no-stream ...` shows CPU and memory for each application container.
+3. Prometheus target health is `up=1` for `cadvisor:8080` and `prometheus:9090`.
+4. Prometheus queries return data:
+   - `container_memory_working_set_bytes{id="/restricted"}`
+   - `rate(container_cpu_usage_seconds_total{id="/restricted"}[5m])`
+5. Grafana `http://localhost:3000` contains the `Docker Runtime Resources` dashboard and the time range is set to the last 15 minutes.
+
+If Grafana still looks empty, open **Explore** and run the Prometheus queries above directly; if they return data there, the dashboard is the only layer that needs adjustment.
 
 ---
 

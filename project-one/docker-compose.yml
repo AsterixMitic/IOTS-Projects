@@ -69,5 +69,59 @@ services:
       - "8000:8000"
     restart: unless-stopped
 
+  docker-stats-exporter:
+    build:
+      context: ./monitoring/docker-stats-exporter
+      dockerfile: Dockerfile
+    container_name: project-one-docker-stats-exporter
+    depends_on:
+      - postgres
+      - rest-service-csharp
+      - grpc-service-go
+      - graphql-service-rust
+    ports:
+      - "9101:9101"
+    environment:
+      - DOCKER_STATS_INTERVAL=5
+      - COMPOSE_PROJECT=project-one
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    container_name: project-one-prometheus
+    depends_on:
+      - docker-stats-exporter
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.enable-lifecycle"
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:11.2.2
+    container_name: project-one-grafana
+    depends_on:
+      - prometheus
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    restart: unless-stopped
+
 volumes:
   postgres_data:
+  prometheus_data:
+  grafana_data:
