@@ -41,9 +41,9 @@ project-two/
 │   └── mqtt/
 │       └── mosquitto.conf
 ├── services/
-│   ├── ingestion-node/
-│   ├── storage-dotnet/
-│   └── analytics-node/
+│   ├── ingestion/
+│   ├── storage/
+│   └── analytics/
 ├── shared/
 │   ├── contracts/
 │   └── sql/
