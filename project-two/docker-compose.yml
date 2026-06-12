@@ -21,20 +21,31 @@ services:
     ports:
       - "1883:1883"
     volumes:
-      - ./broker/mqtt/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./brokers/mqtt/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
       - mosquitto_data:/mosquitto/data
       - mosquitto_log:/mosquitto/log
+    healthcheck:
+      test: ["CMD-SHELL", "mosquitto_sub -t '$$SYS/#' -C 1 -i healthcheck -W 3"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: unless-stopped
 
   kafka:
     image: apache/kafka:latest
     container_name: project-two-kafka
     env_file:
-      - .env
+      - ./brokers/kafka/kafka.env
     ports:
       - "9092:9092"
     volumes:
       - kafka_data:/tmp/kraft-combined-logs
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
     restart: unless-stopped
 
   ingestion:
@@ -50,11 +61,15 @@ services:
       BROKER_URL: ${BROKER_URL:-}
       MQTT_TOPIC: ${MQTT_TOPIC:-iot/readings}
       KAFKA_TOPIC: ${KAFKA_TOPIC:-iot.readings}
+      MQTT_QOS: ${MQTT_QOS:-1}
+      KAFKA_ACKS: ${KAFKA_ACKS:-1}
     ports:
       - "3000:3000"
     depends_on:
-      - mosquitto
-      - kafka
+      mosquitto:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
     restart: unless-stopped
 
   storage:
@@ -68,10 +83,17 @@ services:
       DATABASE_URL: ${DATABASE_URL:-Host=postgres;Port=5432;Database=iot_events;Username=iot;Password=change-me}
       ConnectionStrings__Postgres: ${POSTGRES_CONNECTION_STRING:-Host=postgres;Port=5432;Database=iot_events;Username=iot;Password=change-me}
       ASPNETCORE_URLS: http://+:8080
+      MQTT_TOPIC: ${MQTT_TOPIC:-iot/readings}
+      KAFKA_TOPIC: ${KAFKA_TOPIC:-iot.readings}
     ports:
       - "8080:8080"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+      mosquitto:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
     restart: unless-stopped
 
   analytics:
@@ -85,13 +107,18 @@ services:
       PORT: 3001
       BROKER_MODE: ${BROKER_MODE:-mqtt}
       BROKER_URL: ${BROKER_URL:-}
+      MQTT_TOPIC: ${MQTT_TOPIC:-iot/readings}
+      KAFKA_TOPIC: ${KAFKA_TOPIC:-iot.readings}
+      MQTT_QOS: ${MQTT_QOS:-1}
       WINDOW_SECONDS: ${WINDOW_SECONDS:-10}
       ALERT_THRESHOLD: ${ALERT_THRESHOLD:-50}
     ports:
       - "3001:3001"
     depends_on:
-      - mosquitto
-      - kafka
+      mosquitto:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
     restart: unless-stopped
 
 volumes:
