@@ -1731,3 +1731,342 @@ project-two-mosquitto  | 2026-06-12T18:46:30: New connection from ::1:43746 on p
 project-two-mosquitto  | 2026-06-12T18:46:30: New client connected from ::1:43746 as healthcheck (p4, c1, k60).
 project-two-mosquitto  | 2026-06-12T18:46:30: Client healthcheck [::1:43746] disconnected: connection closed by client.
 project-two-analytics  | [window #15] No readings in window.
+project-two-mosquitto  | 2026-06-12T18:46:41: New connection from ::1:36898 on port 1883.
+project-two-mosquitto  | 2026-06-12T18:46:41: New client connected from ::1:36898 as healthcheck (p4, c1, k60).
+project-two-mosquitto  | 2026-06-12T18:46:41: Client healthcheck [::1:36898] disconnected: connection closed by client.
+project-two-analytics  | [window #16] No readings in window.
+project-two-mosquitto  | 2026-06-12T18:46:51: New connection from ::1:35612 on port 1883.
+project-two-mosquitto  | 2026-06-12T18:46:51: New client connected from ::1:35612 as healthcheck (p4, c1, k60).
+project-two-mosquitto  | 2026-06-12T18:46:51: Client healthcheck [::1:35612] disconnected: connection closed by client.
+project-two-analytics  | [window #17] No readings in window.
+project-two-mosquitto  | 2026-06-12T18:46:55: Saving in-memory database to /mosquitto/data//mosquitto.db.
+project-two-mosquitto  | 2026-06-12T18:47:01: New connection from ::1:47226 on port 1883.
+project-two-mosquitto  | 2026-06-12T18:47:01: New client connected from ::1:47226 as healthcheck (p4, c1, k60).
+project-two-mosquitto  | 2026-06-12T18:47:01: Client healthcheck [::1:47226] disconnected: connection closed by client.
+project-two-analytics  | [window #18] No readings in window.
+project-two-mosquitto  | 2026-06-12T18:47:11: New connection from ::1:39508 on port 1883.
+project-two-mosquitto  | 2026-06-12T18:47:11: New client connected from ::1:39508 as healthcheck (p4, c1, k60).
+project-two-mosquitto  | 2026-06-12T18:47:11: Client healthcheck [::1:39508] disconnected: connection closed by client.
+project-two-analytics  | [window #19] No readings in window.
+project-two-mosquitto  | 2026-06-12T18:47:21: New connection from ::1:33002 on port 1883.
+project-two-mosquitto  | 2026-06-12T18:47:21: New client connected from ::1:33002 as healthcheck (p4, c1, k60).
+project-two-mosquitto  | 2026-06-12T18:47:21: Client healthcheck [::1:33002] disconnected: connection closed by client.
+project-two-analytics  | [window #20] No readings in window.
+project-two-mosquitto  | 2026-06-12T18:47:26: Saving in-memory database to /mosquitto/data//mosquitto.db.
+project-two-mosquitto  | 2026-06-12T18:47:31: New connection from ::1:35274 on port 1883.
+project-two-mosquitto  | 2026-06-12T18:47:31: New client connected from ::1:35274 as healthcheck (p4, c1, k60).
+project-two-mosquitto  | 2026-06-12T18:47:31: Client healthcheck [::1:35274] disconnected: connection closed by client.
+project-two-analytics  | [window #21] No readings in window.
+project-two-mosquitto  | 2026-06-12T18:47:41: New connection from ::1:33988 on port 1883.
+project-two-mosquitto  | 2026-06-12T18:47:41: New client connected from ::1:33988 as healthcheck (p4, c1, k60).
+project-two-mosquitto  | 2026-06-12T18:47:41: Client healthcheck [::1:33988] disconnected: connection closed by client.
+project-two-analytics  | [window #22] No readings in window.
+project-two-mosquitto  | 2026-06-12T18:47:51: New connection from ::1:47022 on port 1883.
+project-two-mosquitto  | 2026-06-12T18:47:51: New client connected from ::1:47022 as healthcheck (p4, c1, k60).
+project-two-mosquitto  | 2026-06-12T18:47:51: Client healthcheck [::1:47022] disconnected: connection closed by client.
+project-two-analytics  | [window #23] No readings in window.
+project-two-mosquitto  | 2026-06-12T18:47:57: Saving in-memory database to /mosquitto/data//mosquitto.db.
+project-two-mosquitto  | 2026-06-12T18:48:01: New connection from ::1:52684 on port 1883.
+project-two-mosquitto  | 2026-06-12T18:48:01: New client connected from ::1:52684 as healthcheck (p4, c1, k60).
+project-two-mosquitto  | 2026-06-12T18:48:01: Client healthcheck [::1:52684] disconnected: connection closed by client.
+project-two-analytics  | [window #24] No readings in window.
+project-two-mosquitto  | 2026-06-12T18:48:12: New connection from ::1:48248 on port 1883.
+project-two-mosquitto  | 2026-06-12T18:48:12: New client connected from ::1:48248 as healthcheck (p4, c1, k60).
+project-two-mosquitto  | 2026-06-12T18:48:12: Client healthcheck [::1:48248] disconnected: connection closed by client.
+project-two-analytics  | [window #25] No readings in window.
+project-two-mosquitto  | 2026-06-12T18:48:22: New connection from ::1:36570 on port 1883.
+project-two-mosquitto  | 2026-06-12T18:48:22: New client connected from ::1:36570 as healthcheck (p4, c1, k60).
+project-two-mosquitto  | 2026-06-12T18:48:22: Client healthcheck [::1:36570] disconnected: connection closed by client.
+project-two-analytics  | [window #26] No readings in window.
+project-two-mosquitto  | 2026-06-12T19:37:31: Saving in-memory database to /mosquitto/data//mosquitto.db.
+project-two-analytics  | {"level":"WARN","timestamp":"2026-06-12T19:37:31.355Z","logger":"kafkajs","message":"[RequestQueue] Response without match","clientId":"analytics-service","broker":"kafka:9092","correlationId":74}
+project-two-mosquitto  | 2026-06-12T19:37:35: New connection from ::1:57788 on port 1883.
+project-two-mosquitto  | 2026-06-12T19:37:35: New client connected from ::1:57788 as healthcheck (p4, c1, k60).
+project-two-mosquitto  | 2026-06-12T19:37:35: Client healthcheck [::1:57788] disconnected: connection closed by client.
+project-two-analytics  | [window #27] No readings in window.
+project-two-mosquitto  | 2026-06-12T19:37:45: New connection from ::1:40978 on port 1883.
+project-two-mosquitto  | 2026-06-12T19:37:45: New client connected from ::1:40978 as healthcheck (p4, c1, k60).
+project-two-mosquitto  | 2026-06-12T19:37:45: Client healthcheck [::1:40978] disconnected: connection closed by client.
+project-two-analytics  | [window #28] No readings in window.
+project-two-postgres   | 2026-06-12 19:37:48.804 UTC [1] LOG:  received fast shutdown request
+project-two-analytics  | [analytics] SIGTERM received, shutting down...
+project-two-mosquitto  | 2026-06-12T19:37:48: mosquitto version 2.1.2 terminating
+project-two-mosquitto  | 2026-06-12T19:37:48: Saving in-memory database to /mosquitto/data//mosquitto.db.
+project-two-storage    | info: Microsoft.Hosting.Lifetime[0]
+project-two-storage    |       Application is shutting down...
+project-two-ingestion  | [ingestion] SIGTERM received, shutting down...
+project-two-postgres   | 2026-06-12 19:37:48.807 UTC [1] LOG:  aborting any active transactions
+project-two-postgres   | 2026-06-12 19:37:48.807 UTC [40] FATAL:  terminating connection due to administrator command
+project-two-kafka      | [2026-06-12 19:37:48,807] INFO Terminating process due to signal SIGTERM (org.apache.kafka.common.utils.LoggingSignalHandler)
+project-two-postgres   | 2026-06-12 19:37:48.810 UTC [1] LOG:  background worker "logical replication launcher" (PID 32) exited with exit code 1
+project-two-postgres   | 2026-06-12 19:37:48.812 UTC [27] LOG:  shutting down
+project-two-postgres   | 2026-06-12 19:37:48.815 UTC [27] LOG:  checkpoint starting: shutdown immediate
+project-two-kafka      | [2026-06-12 19:37:48,818] INFO [BrokerServer id=1] Transition from STARTED to SHUTTING_DOWN (kafka.server.BrokerServer)
+project-two-kafka      | [2026-06-12 19:37:48,819] INFO [BrokerServer id=1] shutting down (kafka.server.BrokerServer)
+project-two-kafka      | [2026-06-12 19:37:48,819] INFO [BrokerLifecycleManager id=1] Beginning controlled shutdown. (kafka.server.BrokerLifecycleManager)
+project-two-kafka      | [2026-06-12 19:37:48,854] INFO [BrokerLifecycleManager id=1] The broker is in PENDING_CONTROLLED_SHUTDOWN state, still waiting for the active controller. (kafka.server.BrokerLifecycleManager)
+project-two-kafka      | [2026-06-12 19:37:48,859] INFO [GroupCoordinator id=1 topic=__consumer_offsets partition=10] [Group project-two-storage] Member project-two-storage-8681ab2a-aa6f-4849-b987-58711dd263c9 has left group through explicit `LeaveGroup` request; client reason: not provided (org.apache.kafka.coordinator.group.GroupMetadataManager)
+project-two-kafka      | [2026-06-12 19:37:48,860] INFO [GroupCoordinator id=1 topic=__consumer_offsets partition=10] Preparing to rebalance group project-two-storage in state PreparingRebalance with old generation 3 (reason: explicit `LeaveGroup` request for (project-two-storage-8681ab2a-aa6f-4849-b987-58711dd263c9) members.). (org.apache.kafka.coordinator.group.GroupMetadataManager)
+project-two-kafka      | [2026-06-12 19:37:48,860] INFO [GroupCoordinator id=1 topic=__consumer_offsets partition=10] Group project-two-storage with generation 4 is now empty. (org.apache.kafka.coordinator.group.GroupMetadataManager)
+project-two-postgres   | 2026-06-12 19:37:48.862 UTC [27] LOG:  checkpoint complete: wrote 32 buffers (0.2%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.011 s, sync=0.015 s, total=0.050 s; sync files=17, longest=0.003 s, average=0.001 s; distance=166 kB, estimate=166 kB; lsn=0/1A34140, redo lsn=0/1A34140
+project-two-kafka      | [2026-06-12 19:37:48,862] INFO [ReplicaFetcherManager on broker 1] Removed fetcher for partitions HashSet(__consumer_offsets-22, __consumer_offsets-30, __consumer_offsets-35, __consumer_offsets-37, iot.readings-0, __consumer_offsets-38, __consumer_offsets-13, iot.readings-2, __consumer_offsets-8, __consumer_offsets-21, __consumer_offsets-4, __consumer_offsets-27, __consumer_offsets-7, __consumer_offsets-9, __consumer_offsets-46, iot.readings-1, __consumer_offsets-25, __consumer_offsets-41, __consumer_offsets-33, __consumer_offsets-23, __consumer_offsets-49, __consumer_offsets-47, __consumer_offsets-16, __consumer_offsets-28, __consumer_offsets-31, __consumer_offsets-36, __consumer_offsets-42, __consumer_offsets-3, __consumer_offsets-18, __consumer_offsets-15, __consumer_offsets-24, __consumer_offsets-17, __consumer_offsets-48, __consumer_offsets-19, __consumer_offsets-11, __consumer_offsets-2, __consumer_offsets-43, __consumer_offsets-6, __consumer_offsets-14, __consumer_offsets-20, __consumer_offsets-0, __consumer_offsets-44, __consumer_offsets-39, __consumer_offsets-12, __consumer_offsets-45, __consumer_offsets-1, __consumer_offsets-5, __consumer_offsets-26, __consumer_offsets-29, __consumer_offsets-34, __consumer_offsets-10, __consumer_offsets-32, __consumer_offsets-40) (kafka.server.ReplicaFetcherManager)
+project-two-kafka      | [2026-06-12 19:37:48,861] ERROR [GroupCoordinator id=1] Writing records to __consumer_offsets-10 failed due to: For requests intended only for the leader, this error indicates that the broker is not the current leader. For requests intended for any replica, this error indicates that the broker is not a replica of the topic partition.. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | org.apache.kafka.common.errors.NotLeaderOrFollowerException: For requests intended only for the leader, this error indicates that the broker is not the current leader. For requests intended for any replica, this error indicates that the broker is not a replica of the topic partition.
+project-two-kafka      | [2026-06-12 19:37:48,863] INFO [ReplicaAlterLogDirsManager on broker 1] Removed fetcher for partitions HashSet(__consumer_offsets-22, __consumer_offsets-30, __consumer_offsets-35, __consumer_offsets-37, iot.readings-0, __consumer_offsets-38, __consumer_offsets-13, iot.readings-2, __consumer_offsets-8, __consumer_offsets-21, __consumer_offsets-4, __consumer_offsets-27, __consumer_offsets-7, __consumer_offsets-9, __consumer_offsets-46, iot.readings-1, __consumer_offsets-25, __consumer_offsets-41, __consumer_offsets-33, __consumer_offsets-23, __consumer_offsets-49, __consumer_offsets-47, __consumer_offsets-16, __consumer_offsets-28, __consumer_offsets-31, __consumer_offsets-36, __consumer_offsets-42, __consumer_offsets-3, __consumer_offsets-18, __consumer_offsets-15, __consumer_offsets-24, __consumer_offsets-17, __consumer_offsets-48, __consumer_offsets-19, __consumer_offsets-11, __consumer_offsets-2, __consumer_offsets-43, __consumer_offsets-6, __consumer_offsets-14, __consumer_offsets-20, __consumer_offsets-0, __consumer_offsets-44, __consumer_offsets-39, __consumer_offsets-12, __consumer_offsets-45, __consumer_offsets-1, __consumer_offsets-5, __consumer_offsets-26, __consumer_offsets-29, __consumer_offsets-34, __consumer_offsets-10, __consumer_offsets-32, __consumer_offsets-40) (kafka.server.ReplicaAlterLogDirsManager)
+project-two-kafka      | [2026-06-12 19:37:48,863] WARN [GroupCoordinator id=1 topic=__consumer_offsets partition=10] Failed to write empty metadata for group project-two-storage: This is not the correct coordinator. (org.apache.kafka.coordinator.group.GroupMetadataManager)
+project-two-kafka      | [2026-06-12 19:37:48,864] ERROR [GroupCoordinator id=1] Execution of FlushBatch failed due to For requests intended only for the leader, this error indicates that the broker is not the current leader. For requests intended for any replica, this error indicates that the broker is not a replica of the topic partition.. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | org.apache.kafka.common.errors.NotLeaderOrFollowerException: For requests intended only for the leader, this error indicates that the broker is not the current leader. For requests intended for any replica, this error indicates that the broker is not a replica of the topic partition.
+project-two-postgres   | 2026-06-12 19:37:48.866 UTC [1] LOG:  database system is shut down
+project-two-kafka      | [2026-06-12 19:37:48,870] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-13 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,870] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-46 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-13 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-9 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-42 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-21 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-17 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-46 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-30 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-17 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-9 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-26 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-5 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-38 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-1 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-34 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-16 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-45 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-12 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-41 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-46 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-24 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-20 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-34 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-49 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-9 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-34 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-13 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-0 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-24 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-1 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-29 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-38 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-24 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-25 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-1 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-26 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-17 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-26 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,872] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-49 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1 topic=__consumer_offsets partition=38] [GroupId=analytics-group] Unloading group metadata for generation 3. (org.apache.kafka.coordinator.group.GroupMetadataManager)
+project-two-kafka      | [2026-06-12 19:37:48,872] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-20 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,872] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-45 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,871] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-8 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,872] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-45 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,872] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-20 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,872] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-37 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,872] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-12 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,872] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-25 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,872] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-4 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,872] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-33 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,872] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-12 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,872] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-15 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,872] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-25 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,872] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-48 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,872] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-11 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,872] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-38 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,872] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-44 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,872] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-5 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,872] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-29 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,872] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-5 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,872] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-29 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,872] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-33 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,872] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-33 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,872] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-0 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,872] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-49 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,872] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-0 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,872] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-23 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,872] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-42 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-19 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-41 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-32 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-42 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-28 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-41 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-11 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-37 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-37 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-7 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-11 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-19 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-40 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-8 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-19 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-21 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-3 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-4 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-15 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-4 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-21 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-15 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-44 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-32 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-30 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-30 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-44 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-23 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-32 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-40 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-23 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-16 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-40 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-28 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-16 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-7 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-48 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-28 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-7 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-36 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-8 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-48 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-3 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-36 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,873] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-47 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-36 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-3 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-14 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-47 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-43 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-47 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-10 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-43 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-22 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-43 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-18 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-14 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-31 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-14 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-10 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-22 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-18 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-27 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-31 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1 topic=__consumer_offsets partition=10] [GroupId=project-two-storage] Unloading group metadata for generation 4. (org.apache.kafka.coordinator.group.GroupMetadataManager)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-39 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-22 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-31 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-18 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-27 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-6 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-39 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-10 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-27 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-6 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-39 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-35 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-6 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Scheduling unloading of metadata for __consumer_offsets-2 with epoch OptionalInt[3] (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-35 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-35 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Started unloading metadata for __consumer_offsets-2 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,874] INFO [GroupCoordinator id=1] Finished unloading metadata for __consumer_offsets-2 with epoch OptionalInt[3]. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,932] INFO [BrokerLifecycleManager id=1] The controller has asked us to exit controlled shutdown. (kafka.server.BrokerLifecycleManager)
+project-two-kafka      | [2026-06-12 19:37:48,932] INFO [BrokerLifecycleManager id=1] beginShutdown: shutting down event queue. (org.apache.kafka.queue.KafkaEventQueue)
+project-two-kafka      | [2026-06-12 19:37:48,933] INFO [BrokerLifecycleManager id=1] Transitioning from PENDING_CONTROLLED_SHUTDOWN to SHUTTING_DOWN. (kafka.server.BrokerLifecycleManager)
+project-two-kafka      | [2026-06-12 19:37:48,933] INFO [broker-1-to-controller-heartbeat-channel-manager]: Shutting down (kafka.server.NodeToControllerRequestThread)
+project-two-kafka      | [2026-06-12 19:37:48,933] INFO [broker-1-to-controller-heartbeat-channel-manager]: Shutdown completed (kafka.server.NodeToControllerRequestThread)
+project-two-kafka      | [2026-06-12 19:37:48,933] INFO [broker-1-to-controller-heartbeat-channel-manager]: Stopped (kafka.server.NodeToControllerRequestThread)
+project-two-kafka      | [2026-06-12 19:37:48,933] INFO [SocketServer listenerType=BROKER, nodeId=1] Stopping socket server request processors (kafka.network.SocketServer)
+project-two-analytics  | {"level":"INFO","timestamp":"2026-06-12T19:37:48.937Z","logger":"kafkajs","message":"[Runner] consumer not running, exiting","groupId":"analytics-group","memberId":"analytics-service-07a724ea-652e-48fd-924f-94ad6c568489"}
+project-two-kafka      | [2026-06-12 19:37:48,939] INFO Node to controller channel manager for heartbeat shutdown (kafka.server.NodeToControllerChannelManagerImpl)
+project-two-kafka      | [2026-06-12 19:37:48,940] INFO [SocketServer listenerType=BROKER, nodeId=1] Stopped socket server request processors (kafka.network.SocketServer)
+project-two-kafka      | [2026-06-12 19:37:48,941] INFO [data-plane Kafka Request Handler on Broker 1] shutting down (kafka.server.KafkaRequestHandlerPool)
+project-two-kafka      | [2026-06-12 19:37:48,942] INFO [data-plane Kafka Request Handler on Broker 1] shut down completely (kafka.server.KafkaRequestHandlerPool)
+project-two-kafka      | [2026-06-12 19:37:48,942] INFO [ExpirationReaper-1-AlterAcls]: Shutting down (org.apache.kafka.server.purgatory.DelayedOperationPurgatory$ExpiredOperationReaper)
+project-two-analytics  | {"level":"ERROR","timestamp":"2026-06-12T19:37:48.942Z","logger":"kafkajs","message":"[Connection] Connection error: connect ECONNREFUSED 172.20.0.4:9092","broker":"kafka:9092","clientId":"analytics-service","stack":"Error: connect ECONNREFUSED 172.20.0.4:9092\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}
+project-two-kafka      | [2026-06-12 19:37:48,943] INFO [ExpirationReaper-1-AlterAcls]: Shutdown completed (org.apache.kafka.server.purgatory.DelayedOperationPurgatory$ExpiredOperationReaper)
+project-two-kafka      | [2026-06-12 19:37:48,943] INFO [ExpirationReaper-1-AlterAcls]: Stopped (org.apache.kafka.server.purgatory.DelayedOperationPurgatory$ExpiredOperationReaper)
+project-two-analytics  | {"level":"INFO","timestamp":"2026-06-12T19:37:48.943Z","logger":"kafkajs","message":"[Consumer] Stopped","groupId":"analytics-group"}
+project-two-kafka      | [2026-06-12 19:37:48,943] INFO [KafkaApi-1] Shutdown complete. (kafka.server.KafkaApis)
+project-two-kafka      | [2026-06-12 19:37:48,945] INFO [TransactionCoordinator id=1] Shutting down. (kafka.coordinator.transaction.TransactionCoordinator)
+project-two-kafka      | [2026-06-12 19:37:48,945] INFO [Transaction State Manager 1]: Shutdown complete (kafka.coordinator.transaction.TransactionStateManager)
+project-two-kafka      | [2026-06-12 19:37:48,945] INFO [TxnMarkerSenderThread-1]: Shutting down (kafka.coordinator.transaction.TransactionMarkerChannelManager)
+project-two-kafka      | [2026-06-12 19:37:48,946] INFO [TxnMarkerSenderThread-1]: Shutdown completed (kafka.coordinator.transaction.TransactionMarkerChannelManager)
+project-two-kafka      | [2026-06-12 19:37:48,946] INFO [TxnMarkerSenderThread-1]: Stopped (kafka.coordinator.transaction.TransactionMarkerChannelManager)
+project-two-kafka      | [2026-06-12 19:37:48,947] INFO [TransactionCoordinator id=1] Shutdown complete. (kafka.coordinator.transaction.TransactionCoordinator)
+project-two-kafka      | [2026-06-12 19:37:48,948] INFO [GroupCoordinator id=1] Shutting down. (org.apache.kafka.coordinator.group.GroupCoordinatorService)
+project-two-kafka      | [2026-06-12 19:37:48,948] INFO [GroupCoordinator id=1] Closing coordinator runtime. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,948] INFO [group-coordinator-reaper]: Shutting down (org.apache.kafka.server.util.timer.SystemTimerReaper$Reaper)
+project-two-kafka      | [2026-06-12 19:37:48,949] INFO [group-coordinator-reaper]: Stopped (org.apache.kafka.server.util.timer.SystemTimerReaper$Reaper)
+project-two-kafka      | [2026-06-12 19:37:48,949] INFO [group-coordinator-reaper]: Shutdown completed (org.apache.kafka.server.util.timer.SystemTimerReaper$Reaper)
+project-two-kafka      | [2026-06-12 19:37:48,949] INFO [GroupCoordinator id=1] Shutting down event processor. (org.apache.kafka.coordinator.common.runtime.MultiThreadedEventProcessor)
+project-two-kafka      | [2026-06-12 19:37:48,949] INFO [group-coordinator-event-processor-2]: Shutting down. Draining the remaining events. (org.apache.kafka.coordinator.common.runtime.MultiThreadedEventProcessor$EventProcessorThread)
+project-two-kafka      | [2026-06-12 19:37:48,949] INFO [group-coordinator-event-processor-2]: Shutdown completed (org.apache.kafka.coordinator.common.runtime.MultiThreadedEventProcessor$EventProcessorThread)
+project-two-kafka      | [2026-06-12 19:37:48,949] INFO [group-coordinator-event-processor-1]: Shutting down. Draining the remaining events. (org.apache.kafka.coordinator.common.runtime.MultiThreadedEventProcessor$EventProcessorThread)
+project-two-kafka      | [2026-06-12 19:37:48,949] INFO [group-coordinator-event-processor-0]: Shutting down. Draining the remaining events. (org.apache.kafka.coordinator.common.runtime.MultiThreadedEventProcessor$EventProcessorThread)
+project-two-kafka      | [2026-06-12 19:37:48,949] INFO [group-coordinator-event-processor-1]: Shutdown completed (org.apache.kafka.coordinator.common.runtime.MultiThreadedEventProcessor$EventProcessorThread)
+project-two-kafka      | [2026-06-12 19:37:48,949] INFO [group-coordinator-event-processor-3]: Shutting down. Draining the remaining events. (org.apache.kafka.coordinator.common.runtime.MultiThreadedEventProcessor$EventProcessorThread)
+project-two-kafka      | [2026-06-12 19:37:48,949] INFO [group-coordinator-event-processor-0]: Shutdown completed (org.apache.kafka.coordinator.common.runtime.MultiThreadedEventProcessor$EventProcessorThread)
+project-two-kafka      | [2026-06-12 19:37:48,949] INFO [group-coordinator-event-processor-3]: Shutdown completed (org.apache.kafka.coordinator.common.runtime.MultiThreadedEventProcessor$EventProcessorThread)
+project-two-kafka      | [2026-06-12 19:37:48,949] INFO [GroupCoordinator id=1] Event processor closed. (org.apache.kafka.coordinator.common.runtime.MultiThreadedEventProcessor)
+project-two-kafka      | [2026-06-12 19:37:48,950] INFO [GroupCoordinator id=1] Coordinator runtime closed. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,951] INFO [GroupCoordinator id=1] Shutdown complete. (org.apache.kafka.coordinator.group.GroupCoordinatorService)
+project-two-kafka      | [2026-06-12 19:37:48,951] INFO [network-partition-metadata-client-reaper]: Shutting down (org.apache.kafka.server.util.timer.SystemTimerReaper$Reaper)
+project-two-kafka      | [2026-06-12 19:37:48,951] INFO [network-partition-metadata-client-reaper]: Shutdown completed (org.apache.kafka.server.util.timer.SystemTimerReaper$Reaper)
+project-two-kafka      | [2026-06-12 19:37:48,951] INFO [network-partition-metadata-client-reaper]: Stopped (org.apache.kafka.server.util.timer.SystemTimerReaper$Reaper)
+project-two-kafka      | [2026-06-12 19:37:48,951] INFO [ShareCoordinator id=1] Shutting down. (org.apache.kafka.coordinator.share.ShareCoordinatorService)
+project-two-kafka      | [2026-06-12 19:37:48,951] INFO [ShareCoordinator id=1] Closing coordinator runtime. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,951] INFO [share-coordinator-reaper]: Shutting down (org.apache.kafka.server.util.timer.SystemTimerReaper$Reaper)
+project-two-kafka      | [2026-06-12 19:37:48,952] INFO [share-coordinator-reaper]: Shutdown completed (org.apache.kafka.server.util.timer.SystemTimerReaper$Reaper)
+project-two-kafka      | [2026-06-12 19:37:48,952] INFO [share-coordinator-reaper]: Stopped (org.apache.kafka.server.util.timer.SystemTimerReaper$Reaper)
+project-two-kafka      | [2026-06-12 19:37:48,952] INFO [ShareCoordinator id=1] Shutting down event processor. (org.apache.kafka.coordinator.common.runtime.MultiThreadedEventProcessor)
+project-two-kafka      | [2026-06-12 19:37:48,952] INFO [share-coordinator-event-processor-0]: Shutting down. Draining the remaining events. (org.apache.kafka.coordinator.common.runtime.MultiThreadedEventProcessor$EventProcessorThread)
+project-two-kafka      | [2026-06-12 19:37:48,952] INFO [share-coordinator-event-processor-0]: Shutdown completed (org.apache.kafka.coordinator.common.runtime.MultiThreadedEventProcessor$EventProcessorThread)
+project-two-kafka      | [2026-06-12 19:37:48,952] INFO [ShareCoordinator id=1] Event processor closed. (org.apache.kafka.coordinator.common.runtime.MultiThreadedEventProcessor)
+project-two-kafka      | [2026-06-12 19:37:48,952] INFO [ShareCoordinator id=1] Coordinator runtime closed. (org.apache.kafka.coordinator.common.runtime.CoordinatorRuntime)
+project-two-kafka      | [2026-06-12 19:37:48,953] INFO [ShareCoordinator id=1] Shutdown complete. (org.apache.kafka.coordinator.share.ShareCoordinatorService)
+project-two-kafka      | [2026-06-12 19:37:48,953] INFO [AssignmentsManager id=1]KafkaEventQueue#close: shutting down event queue. (org.apache.kafka.queue.KafkaEventQueue)
+project-two-kafka      | [2026-06-12 19:37:48,953] INFO [AssignmentsManager id=1] shutting down. (org.apache.kafka.server.AssignmentsManager)
+project-two-kafka      | [2026-06-12 19:37:48,953] INFO [broker-1-to-controller-directory-assignments-channel-manager]: Shutting down (kafka.server.NodeToControllerRequestThread)
+project-two-kafka      | [2026-06-12 19:37:48,953] INFO [broker-1-to-controller-directory-assignments-channel-manager]: Stopped (kafka.server.NodeToControllerRequestThread)
+project-two-kafka      | [2026-06-12 19:37:48,953] INFO [broker-1-to-controller-directory-assignments-channel-manager]: Shutdown completed (kafka.server.NodeToControllerRequestThread)
+project-two-kafka      | [2026-06-12 19:37:48,954] INFO Node to controller channel manager for directory-assignments shutdown (kafka.server.NodeToControllerChannelManagerImpl)
+project-two-kafka      | [2026-06-12 19:37:48,954] INFO [AssignmentsManager id=1]closed event queue. (org.apache.kafka.queue.KafkaEventQueue)
+project-two-kafka      | [2026-06-12 19:37:48,954] INFO [ReplicaManager broker=1] Shutting down (kafka.server.ReplicaManager)
+project-two-kafka      | [2026-06-12 19:37:48,954] INFO [LogDirFailureHandler]: Shutting down (kafka.server.ReplicaManager$LogDirFailureHandler)
+project-two-kafka      | [2026-06-12 19:37:48,954] INFO [LogDirFailureHandler]: Shutdown completed (kafka.server.ReplicaManager$LogDirFailureHandler)
+project-two-kafka      | [2026-06-12 19:37:48,954] INFO [LogDirFailureHandler]: Stopped (kafka.server.ReplicaManager$LogDirFailureHandler)
+project-two-kafka      | [2026-06-12 19:37:48,955] INFO [ReplicaFetcherManager on broker 1] shutting down (kafka.server.ReplicaFetcherManager)
+project-two-kafka      | [2026-06-12 19:37:48,956] INFO [ReplicaFetcherManager on broker 1] shutdown completed (kafka.server.ReplicaFetcherManager)
+project-two-kafka      | [2026-06-12 19:37:48,956] INFO [ReplicaAlterLogDirsManager on broker 1] shutting down (kafka.server.ReplicaAlterLogDirsManager)
+project-two-kafka      | [2026-06-12 19:37:48,956] INFO [ReplicaAlterLogDirsManager on broker 1] shutdown completed (kafka.server.ReplicaAlterLogDirsManager)
+project-two-kafka      | [2026-06-12 19:37:48,956] INFO [ExpirationReaper-1-Fetch]: Shutting down (org.apache.kafka.server.purgatory.DelayedOperationPurgatory$ExpiredOperationReaper)
+project-two-kafka      | [2026-06-12 19:37:48,956] INFO [ExpirationReaper-1-Fetch]: Shutdown completed (org.apache.kafka.server.purgatory.DelayedOperationPurgatory$ExpiredOperationReaper)
+project-two-kafka      | [2026-06-12 19:37:48,956] INFO [ExpirationReaper-1-Fetch]: Stopped (org.apache.kafka.server.purgatory.DelayedOperationPurgatory$ExpiredOperationReaper)
+project-two-kafka      | [2026-06-12 19:37:48,956] INFO [ExpirationReaper-1-RemoteFetch]: Shutting down (org.apache.kafka.server.purgatory.DelayedOperationPurgatory$ExpiredOperationReaper)
+project-two-kafka      | [2026-06-12 19:37:48,957] INFO [ExpirationReaper-1-RemoteFetch]: Stopped (org.apache.kafka.server.purgatory.DelayedOperationPurgatory$ExpiredOperationReaper)
+project-two-kafka      | [2026-06-12 19:37:48,957] INFO [ExpirationReaper-1-RemoteFetch]: Shutdown completed (org.apache.kafka.server.purgatory.DelayedOperationPurgatory$ExpiredOperationReaper)
+project-two-kafka      | [2026-06-12 19:37:48,957] INFO [ExpirationReaper-1-RemoteListOffsets]: Shutting down (org.apache.kafka.server.purgatory.DelayedOperationPurgatory$ExpiredOperationReaper)
+project-two-kafka      | [2026-06-12 19:37:48,958] INFO [ExpirationReaper-1-RemoteListOffsets]: Stopped (org.apache.kafka.server.purgatory.DelayedOperationPurgatory$ExpiredOperationReaper)
+project-two-kafka      | [2026-06-12 19:37:48,958] INFO [ExpirationReaper-1-RemoteListOffsets]: Shutdown completed (org.apache.kafka.server.purgatory.DelayedOperationPurgatory$ExpiredOperationReaper)
+project-two-kafka      | [2026-06-12 19:37:48,958] INFO [ExpirationReaper-1-Produce]: Shutting down (org.apache.kafka.server.purgatory.DelayedOperationPurgatory$ExpiredOperationReaper)
+project-two-kafka      | [2026-06-12 19:37:48,958] INFO [ExpirationReaper-1-Produce]: Stopped (org.apache.kafka.server.purgatory.DelayedOperationPurgatory$ExpiredOperationReaper)
+project-two-kafka      | [2026-06-12 19:37:48,958] INFO [ExpirationReaper-1-Produce]: Shutdown completed (org.apache.kafka.server.purgatory.DelayedOperationPurgatory$ExpiredOperationReaper)
+project-two-kafka      | [2026-06-12 19:37:48,958] INFO [ExpirationReaper-1-DeleteRecords]: Shutting down (org.apache.kafka.server.purgatory.DelayedOperationPurgatory$ExpiredOperationReaper)
+project-two-kafka      | [2026-06-12 19:37:48,959] INFO [ExpirationReaper-1-DeleteRecords]: Shutdown completed (org.apache.kafka.server.purgatory.DelayedOperationPurgatory$ExpiredOperationReaper)
+project-two-kafka      | [2026-06-12 19:37:48,959] INFO [ExpirationReaper-1-DeleteRecords]: Stopped (org.apache.kafka.server.purgatory.DelayedOperationPurgatory$ExpiredOperationReaper)
+project-two-kafka      | [2026-06-12 19:37:48,959] INFO [ExpirationReaper-1-ShareFetch]: Shutting down (org.apache.kafka.server.purgatory.DelayedOperationPurgatory$ExpiredOperationReaper)
+project-two-kafka      | [2026-06-12 19:37:48,959] INFO [ExpirationReaper-1-ShareFetch]: Stopped (org.apache.kafka.server.purgatory.DelayedOperationPurgatory$ExpiredOperationReaper)
+project-two-kafka      | [2026-06-12 19:37:48,959] INFO [ExpirationReaper-1-ShareFetch]: Shutdown completed (org.apache.kafka.server.purgatory.DelayedOperationPurgatory$ExpiredOperationReaper)
+project-two-kafka      | [2026-06-12 19:37:48,965] INFO [AddPartitionsToTxnSenderThread-1]: Shutting down (org.apache.kafka.server.transaction.AddPartitionsToTxnManager)
+project-two-kafka      | [2026-06-12 19:37:48,965] INFO [AddPartitionsToTxnSenderThread-1]: Shutdown completed (org.apache.kafka.server.transaction.AddPartitionsToTxnManager)
+project-two-kafka      | [2026-06-12 19:37:48,965] INFO [AddPartitionsToTxnSenderThread-1]: Stopped (org.apache.kafka.server.transaction.AddPartitionsToTxnManager)
+project-two-kafka      | [2026-06-12 19:37:48,965] INFO [ReplicaManager broker=1] Shut down completely (kafka.server.ReplicaManager)
+project-two-kafka      | [2026-06-12 19:37:48,966] INFO [broker-1-to-controller-alter-partition-channel-manager]: Shutting down (kafka.server.NodeToControllerRequestThread)
+project-two-kafka      | [2026-06-12 19:37:48,966] INFO [broker-1-to-controller-alter-partition-channel-manager]: Shutdown completed (kafka.server.NodeToControllerRequestThread)
+project-two-kafka      | [2026-06-12 19:37:48,966] INFO [broker-1-to-controller-alter-partition-channel-manager]: Stopped (kafka.server.NodeToControllerRequestThread)
+project-two-kafka      | [2026-06-12 19:37:48,966] INFO Node to controller channel manager for alter-partition shutdown (kafka.server.NodeToControllerChannelManagerImpl)
+project-two-kafka      | [2026-06-12 19:37:48,966] INFO [broker-1-to-controller-forwarding-channel-manager]: Shutting down (kafka.server.NodeToControllerRequestThread)
+project-two-kafka      | [2026-06-12 19:37:48,966] INFO [broker-1-to-controller-forwarding-channel-manager]: Stopped (kafka.server.NodeToControllerRequestThread)
+project-two-kafka      | [2026-06-12 19:37:48,966] INFO [broker-1-to-controller-forwarding-channel-manager]: Shutdown completed (kafka.server.NodeToControllerRequestThread)
+project-two-kafka      | [2026-06-12 19:37:48,967] INFO Node to controller channel manager for forwarding shutdown (kafka.server.NodeToControllerChannelManagerImpl)
+project-two-kafka      | [2026-06-12 19:37:48,967] INFO Shutting down. (kafka.log.LogManager)
