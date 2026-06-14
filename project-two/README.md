@@ -135,7 +135,40 @@ Scenarios:
 4. Implement analytics in Node.js.
 5. Wire MQTT and Kafka adapters.
 6. Add benchmark scripts.
-7. Run scenarios and record results.
+7. Run scenarios and record results. (see `benchmarks/README.md`, `docs/results/`).
+8. ⬜ Write up `docs/report.md` (comparison table + engineering questions).
+
+## Running the stack
+
+```bash
+docker compose up -d --build
+```
+
+This starts `postgres`, `mosquitto`, `kafka` (KRaft mode), and all three
+services. The broker mode is controlled by `BROKER_MODE` (`mqtt` or `kafka`,
+default `mqtt`) plus `MQTT_QOS` / `KAFKA_ACKS` — see `.env` / `.env.example`
+and each service's README for the full list of knobs.
+
+Service endpoints:
+
+| Service | URL | Useful routes |
+|---|---|---|
+| ingestion | http://localhost:3000 | `/health`, `/config`, `POST /simulate/start`, `POST /simulate/stop` |
+| analytics | http://localhost:3001 | `/health`, `/config`, `/window/stats` |
+| storage | http://localhost:8080 | `/`, `/health`, `/config` |
+
+### Database bootstrap
+
+Apply migrations and load the sample dataset — see `db/README.md`.
+
+### Running experiments
+
+See `benchmarks/README.md` for the full benchmark suite (scenarios A–D, both
+brokers, all QoS/`acks` levels). Quick smoke test:
+
+```bash
+./benchmarks/mqtt/scenario_d.sh 1
+```
 
 ## Notes
 
