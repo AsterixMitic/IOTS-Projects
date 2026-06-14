@@ -1,0 +1,26 @@
+strucnjak@machine:~/asterix_mitic/IOTS-Projects/project-two/benchmarks/mqtt$ bash scenario_a.sh 2
+[13:28:46] Scenario A (MQTT, QoS=2) — recreating ingestion/analytics/storage
+[+] up 3/3
+ ✔ Container project-two-kafka     Healthy                                                                                                  1.3s
+ ✔ Container project-two-mosquitto Healthy                                                                                                  1.3s
+ ✔ Container project-two-ingestion Started                                                                                                  1.5s
+[+] up 3/3
+ ✔ Container project-two-mosquitto Healthy                                                                                                  0.9s
+ ✔ Container project-two-kafka     Healthy                                                                                                  0.9s
+ ✔ Container project-two-analytics Started                                                                                                  1.1s
+[+] up 4/4
+ ✔ Container project-two-kafka     Healthy                                                                                                  0.8s
+ ✔ Container project-two-postgres  Healthy                                                                                                  0.8s
+ ✔ Container project-two-mosquitto Healthy                                                                                                  0.8s
+ ✔ Container project-two-storage   Started                                                                                                  1.0s
+[13:28:51] === devices=100 | duration=30s ===
+{"started":true,"deviceCount":100,"intervalMs":1000,"forceAlert":false,"durationMs":30000,"brokerMode":"mqtt","topic":"iot/readings"}
+[13:29:33] devices=100 expected=3000 received=2900 loss=3.33% throughput=96.67 msg/s
+[13:29:33] === devices=1000 | duration=30s ===
+{"started":true,"deviceCount":1000,"intervalMs":1000,"forceAlert":false,"durationMs":30000,"brokerMode":"mqtt","topic":"iot/readings"}
+[13:30:14] devices=1000 expected=30000 received=27691 loss=7.70% throughput=923.03 msg/s
+[13:30:14] === devices=10000 | duration=30s ===
+{"started":true,"deviceCount":10000,"intervalMs":1000,"forceAlert":false,"durationMs":30000,"brokerMode":"mqtt","topic":"iot/readings"}
+[13:30:56] devices=10000 expected=300000 received=72094 loss=75.97% throughput=2403.13 msg/s
+[13:30:56] Scenario A (MQTT, QoS=2) complete. Summary: /home/strucnjak/asterix_mitic/IOTS-Projects/project-two/docs/results/scenario_a/mqtt_qos2_summary.csv
+strucnjak@machine:~/asterix_mitic/IOTS-Projects/project-two/benchmarks/mqtt$ 

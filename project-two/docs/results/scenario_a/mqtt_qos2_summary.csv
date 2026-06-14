@@ -1,0 +1,4 @@
+broker,qos_or_acks,devices,interval_ms,duration_s,expected_msgs,received_db,loss_pct,throughput_msgs_per_s
+mqtt,2,100,1000,30,3000,2900,3.33,96.67
+mqtt,2,1000,1000,30,30000,27691,7.70,923.03
+mqtt,2,10000,1000,30,300000,72094,75.97,2403.13

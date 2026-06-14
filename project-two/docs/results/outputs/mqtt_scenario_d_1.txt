@@ -1,0 +1,23 @@
+strucnjak@machine:~/asterix_mitic/IOTS-Projects/project-two/benchmarks/mqtt$ bash scenario_d.sh 1
+[13:46:16] Scenario D (MQTT, QoS=1) — recreating ingestion/analytics/storage
+[+] up 3/3
+ ✔ Container project-two-mosquitto Healthy                                                                                                  0.9s
+ ✔ Container project-two-kafka     Healthy                                                                                                  0.9s
+ ✔ Container project-two-ingestion Started                                                                                                  1.1s
+[+] up 3/3
+ ✔ Container project-two-kafka     Healthy                                                                                                  0.8s
+ ✔ Container project-two-mosquitto Healthy                                                                                                  0.8s
+ ✔ Container project-two-analytics Started                                                                                                  1.0s
+[+] up 4/4
+ ✔ Container project-two-mosquitto Healthy                                                                                                  0.9s
+ ✔ Container project-two-kafka     Healthy                                                                                                  0.9s
+ ✔ Container project-two-postgres  Healthy                                                                                                  0.9s
+ ✔ Container project-two-storage   Started                                                                                                  1.1s
+[13:46:21] Starting forced-alert simulation: 5 devices for 25s
+{"started":true,"deviceCount":5,"intervalMs":1000,"forceAlert":true,"durationMs":25000,"brokerMode":"mqtt","topic":"iot/readings"}
+[13:46:51] Collecting analytics logs since 2026-06-14T13:46:21
+[ALERT] Window #1 | avg_temp=55.25°C > threshold=50°C | count=40 min=51.23 max=59.97 | avg_latency=1ms
+[ALERT] Window #2 | avg_temp=55.38°C > threshold=50°C | count=50 min=51 max=59.96 | avg_latency=1ms
+[ALERT] Window #3 | avg_temp=55.68°C > threshold=50°C | count=30 min=51.08 max=59.69 | avg_latency=1ms
+[13:46:51] Scenario D (MQTT, QoS=1) complete. Log: /home/strucnjak/asterix_mitic/IOTS-Projects/project-two/docs/results/scenario_d/mqtt_qos1_alerts.log
+strucnjak@machine:~/asterix_mitic/IOTS-Projects/project-two/benchmarks/mqtt$ 
