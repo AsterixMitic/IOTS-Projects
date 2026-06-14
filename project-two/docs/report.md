@@ -32,26 +32,45 @@ Fill in after running the benchmark sweep (`benchmarks/README.md`).
 
 ### Scenario A — Throughput & loss
 
-| Broker | QoS / acks | Devices | Expected msgs | Received (DB) | Loss % | Throughput (msg/s) |
-|---|---|---|---|---|---|---|
-| MQTT | 0 | 100 | | | | |
-| MQTT | 1 | 100 | | | | |
-| MQTT | 2 | 100 | | | | |
-| MQTT | 0 | 1000 | | | | |
-| MQTT | 1 | 1000 | | | | |
-| MQTT | 2 | 1000 | | | | |
-| MQTT | 0 | 10000 | | | | |
-| MQTT | 1 | 10000 | | | | |
-| MQTT | 2 | 10000 | | | | |
-| Kafka | 0 | 100 | | | | |
-| Kafka | 1 | 100 | | | | |
-| Kafka | all | 100 | | | | |
-| Kafka | 0 | 1000 | | | | |
-| Kafka | 1 | 1000 | | | | |
-| Kafka | all | 1000 | | | | |
-| Kafka | 0 | 10000 | | | | |
-| Kafka | 1 | 10000 | | | | |
-| Kafka | all | 10000 | | | | |
+`scenario_a.sh` drains any leftover backlog (`wait_for_storage_idle`) before
+each device-count tier, so each row reflects only that tier's run.
+
+MQTT (single DB-based measurement — Mosquitto has no offset/log concept):
+
+| QoS | Devices | Expected msgs | Received (DB) | Loss % | Throughput (msg/s) |
+|---|---|---|---|---|---|
+| 0 | 100 | | | | |
+| 1 | 100 | | | | |
+| 2 | 100 | | | | |
+| 0 | 1000 | | | | |
+| 1 | 1000 | | | | |
+| 2 | 1000 | | | | |
+| 0 | 10000 | | | | |
+| 1 | 10000 | | | | |
+| 2 | 10000 | | | | |
+
+Kafka — broker-level (topic log-end-offset delta, i.e. messages Kafka durably
+appended regardless of consumer speed) vs. storage-level (rows persisted to
+Postgres within the run + 5s, plus end-of-run consumer lag):
+
+| acks | Devices | Expected msgs | Broker received | Broker loss % | Broker throughput (msg/s) | Persisted (DB) | Persisted throughput (msg/s) | Storage lag at end |
+|---|---|---|---|---|---|---|---|---|
+| 0 | 100 | | | | | | | |
+| 1 | 100 | | | | | | | |
+| all | 100 | | | | | | | |
+| 0 | 1000 | | | | | | | |
+| 1 | 1000 | | | | | | | |
+| all | 1000 | | | | | | | |
+| 0 | 10000 | | | | | | | |
+| 1 | 10000 | | | | | | | |
+| all | 10000 | | | | | | | |
+
+> For Kafka, "broker loss %" measures actual message loss at the broker
+> (expected to be ~0% for `acks=1`/`acks=all`, possibly >0% for `acks=0`
+> under heavy load). A large gap between "broker received" and "persisted
+> (DB)" at 10000 devices is **not** broker loss — it's the storage service's
+> batch-insert throughput becoming the bottleneck, as anticipated by the
+> assignment brief (batching / disabling writes during Scenarios A/C).
 
 ### Scenario B — Recovery after 30s network outage
 

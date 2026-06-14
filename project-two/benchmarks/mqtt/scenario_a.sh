@@ -34,6 +34,9 @@ wait_for_http "$STORAGE_URL/health"
 for devices in "${DEVICE_COUNTS[@]}"; do
   log "=== devices=$devices | duration=${DURATION}s ==="
 
+  log "Draining any leftover backlog before this tier..."
+  wait_for_storage_idle
+
   before=$(reading_count)
 
   stats_file="$OUT_DIR/mqtt_qos${QOS}_devices${devices}_dockerstats.csv"

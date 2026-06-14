@@ -77,6 +77,52 @@ kafka_consumer_lag() {
     --bootstrap-server localhost:9092 --describe --group "$group" 2>/dev/null || true
 }
 
+# kafka_consumer_lag_total <group-id> -> prints summed LAG across all partitions (0 if unavailable)
+kafka_consumer_lag_total() {
+  local group=$1
+  kafka_consumer_lag "$group" | awk '$3 ~ /^[0-9]+$/ { sum += $5 } END { print sum + 0 }'
+}
+
+# kafka_topic_total_offset <topic> -> prints summed log-end-offset across all partitions
+# This is the total number of messages Kafka has ever durably appended to the
+# topic (broker-confirmed). Take a before/after delta to get the number of
+# messages the broker actually accepted during a run, independent of how fast
+# any consumer (storage/analytics) is reading them.
+kafka_topic_total_offset() {
+  local topic=$1
+  docker exec "$KAFKA_CONTAINER" /opt/kafka/bin/kafka-run-class.sh kafka.tools.GetOffsetShell \
+    --broker-list localhost:9092 --topic "$topic" --time -1 2>/dev/null \
+    | awk -F: '{ sum += $3 } END { print sum + 0 }'
+}
+
+# wait_for_storage_idle [timeout_s] [interval_s]
+# Polls storage /health until receivedMessages == persistedMessages and both
+# are stable across two consecutive polls (i.e. storage has fully drained any
+# backlog from a previous run/tier). Without this, a leftover Kafka/MQTT
+# backlog from an earlier run gets counted as "received" in the next tier,
+# producing inflated or even negative loss percentages.
+wait_for_storage_idle() {
+  local timeout=${1:-180} interval=${2:-3} elapsed=0
+  local last_received="" received persisted metrics
+
+  while [ "$elapsed" -lt "$timeout" ]; do
+    metrics=$(storage_health)
+    received=$(echo "$metrics" | grep -o '"receivedMessages":[0-9]*' | grep -o '[0-9]*')
+    persisted=$(echo "$metrics" | grep -o '"persistedMessages":[0-9]*' | grep -o '[0-9]*')
+
+    if [ -n "$received" ] && [ "$received" = "$persisted" ] && [ "$received" = "$last_received" ]; then
+      return 0
+    fi
+
+    last_received="$received"
+    sleep "$interval"
+    elapsed=$((elapsed + interval))
+  done
+
+  log "WARNING: storage did not reach idle within ${timeout}s (received=${received:-?} persisted=${persisted:-?}) — results for this tier may include backlog from a previous run"
+  return 1
+}
+
 # capture_docker_stats <outfile> <duration_s> <interval_s> <container...>
 # Runs in the foreground for duration_s, sampling docker stats every interval_s.
 # Intended to be run with `&` by the caller so it overlaps with the workload.
