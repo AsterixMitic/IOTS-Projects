@@ -1,0 +1,25 @@
+timestamp,container,cpu_perc,mem_usage,mem_perc,net_io
+2026-06-14T11:48:46,project-two-ingestion,2.09%,44.48MiB / 14.99GiB,0.29%,7.01kB / 3.06kB
+2026-06-14T11:48:46,project-two-storage,0.19%,27.21MiB / 14.99GiB,0.18%,5.26kB / 2.06kB
+2026-06-14T11:48:46,project-two-analytics,0.00%,38.19MiB / 14.99GiB,0.25%,5.08kB / 1.55kB
+2026-06-14T11:48:46,project-two-mosquitto,2.35%,4.148MiB / 14.99GiB,0.03%,279MB / 394MB
+2026-06-14T11:48:53,project-two-ingestion,35.21%,47.03MiB / 14.99GiB,0.31%,7.09kB / 3.14kB
+2026-06-14T11:48:53,project-two-storage,0.20%,27.73MiB / 14.99GiB,0.18%,5.32kB / 2.2kB
+2026-06-14T11:48:53,project-two-analytics,0.00%,38.2MiB / 14.99GiB,0.25%,5.08kB / 1.55kB
+2026-06-14T11:48:53,project-two-mosquitto,0.02%,2.664MiB / 14.99GiB,0.02%,279MB / 394MB
+2026-06-14T11:49:00,project-two-ingestion,36.84%,46.57MiB / 14.99GiB,0.30%,7.09kB / 3.14kB
+2026-06-14T11:49:00,project-two-storage,0.25%,27.66MiB / 14.99GiB,0.18%,5.32kB / 2.2kB
+2026-06-14T11:49:00,project-two-analytics,0.00%,38.2MiB / 14.99GiB,0.25%,5.08kB / 1.55kB
+2026-06-14T11:49:00,project-two-mosquitto,0.03%,2.668MiB / 14.99GiB,0.02%,279MB / 394MB
+2026-06-14T11:49:07,project-two-ingestion,52.11%,46.77MiB / 14.99GiB,0.30%,7.09kB / 3.14kB
+2026-06-14T11:49:07,project-two-storage,0.17%,27.25MiB / 14.99GiB,0.18%,5.39kB / 2.33kB
+2026-06-14T11:49:07,project-two-analytics,0.00%,38.2MiB / 14.99GiB,0.25%,5.08kB / 1.55kB
+2026-06-14T11:49:07,project-two-mosquitto,0.02%,2.664MiB / 14.99GiB,0.02%,279MB / 394MB
+2026-06-14T11:49:14,project-two-ingestion,32.77%,47.49MiB / 14.99GiB,0.31%,7.09kB / 3.14kB
+2026-06-14T11:49:14,project-two-storage,0.20%,27.21MiB / 14.99GiB,0.18%,5.39kB / 2.33kB
+2026-06-14T11:49:14,project-two-analytics,0.00%,38.2MiB / 14.99GiB,0.25%,5.08kB / 1.55kB
+2026-06-14T11:49:14,project-two-mosquitto,0.03%,2.664MiB / 14.99GiB,0.02%,279MB / 394MB
+2026-06-14T11:49:21,project-two-ingestion,0.00%,46.3MiB / 14.99GiB,0.30%,7.27kB / 3.28kB
+2026-06-14T11:49:21,project-two-storage,0.18%,27.51MiB / 14.99GiB,0.18%,5.57kB / 2.46kB
+2026-06-14T11:49:21,project-two-analytics,0.00%,38.44MiB / 14.99GiB,0.25%,5.33kB / 1.68kB
+2026-06-14T11:49:21,project-two-mosquitto,0.03%,2.906MiB / 14.99GiB,0.02%,279MB / 394MB

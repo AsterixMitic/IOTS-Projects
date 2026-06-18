@@ -1,0 +1,22 @@
+strucnjak@machine:~/asterix_mitic/IOTS-Projects/project-two/benchmarks/mqtt$ bash scenario_b.sh 2
+[13:35:26] Scenario B (MQTT, QoS=2) — recreating ingestion/analytics/storage
+[+] up 3/3
+ ✔ Container project-two-mosquitto Healthy                                                                                                  0.8s
+ ✔ Container project-two-kafka     Healthy                                                                                                  0.8s
+ ✔ Container project-two-ingestion Started                                                                                                  1.1s
+[+] up 3/3
+ ✔ Container project-two-kafka     Healthy                                                                                                  0.8s
+ ✔ Container project-two-mosquitto Healthy                                                                                                  0.8s
+ ✔ Container project-two-analytics Started                                                                                                  1.0s
+[+] up 4/4
+ ✔ Container project-two-mosquitto Healthy                                                                                                  0.9s
+ ✔ Container project-two-postgres  Healthy                                                                                                  0.9s
+ ✔ Container project-two-kafka     Healthy                                                                                                  0.9s
+ ✔ Container project-two-storage   Started                                                                                                  1.1s
+[13:35:31] Starting simulation: 20 devices, 90s, 1 msg/s/device
+{"started":true,"deviceCount":20,"intervalMs":1000,"forceAlert":false,"durationMs":90000,"brokerMode":"mqtt","topic":"iot/readings"}
+[13:35:47] Disconnecting project-two-ingestion from network 'project-two_default' for 30s
+[13:36:18] Reconnecting project-two-ingestion to network 'project-two_default'
+[13:37:10] Scenario B (MQTT, QoS=2) complete. Timeline: /home/strucnjak/asterix_mitic/IOTS-Projects/project-two/docs/results/scenario_b/mqtt_qos2_timeline.csv
+[13:37:10] Final storage health: {"status":"ok","metrics":{"receivedMessages":820,"persistedMessages":820,"failedMessages":0,"persistedBatches":39,"lastPersistDurationMs":22}}
+strucnjak@machine:~/asterix_mitic/IOTS-Projects/project-two/benchmarks/mqtt$ 

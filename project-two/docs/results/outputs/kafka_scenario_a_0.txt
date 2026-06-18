@@ -1,0 +1,62 @@
+strucnjak@machine:~/asterix_mitic/IOTS-Projects/project-two/benchmarks/kafka$ bash scenario_a.sh 0
+[10:41:00] Scenario A (Kafka, acks=0) — recreating ingestion/analytics/storage
+[+] up 3/3
+ ✔ Container project-two-ingestion Started                                                                           11.2s
+ ✔ Container project-two-kafka     Healthy                                                                            8.3s
+ ✔ Container project-two-mosquitto Healthy                                                                           10.8s
+[+] up 3/3
+ ✔ Container project-two-mosquitto Healthy                                                                            0.6s
+ ✔ Container project-two-kafka     Healthy                                                                            0.6s
+ ✔ Container project-two-analytics Started                                                                            0.9s
+[+] up 4/4
+ ✔ Container project-two-mosquitto Healthy                                                                            0.9s
+ ✔ Container project-two-kafka     Healthy                                                                            0.9s
+ ✔ Container project-two-storage   Started                                                                           11.1s
+ ✔ Container project-two-postgres  Healthy                                                                           10.7s
+[10:41:25] === devices=100 | duration=30s ===
+{"started":true,"deviceCount":100,"intervalMs":1000,"forceAlert":false,"durationMs":30000,"brokerMode":"kafka","topic":"iot.readings"}
+[10:42:07] devices=100 expected=3000 received=2900 loss=3.33% throughput=96.67 msg/s
+[10:42:07] Consumer lag (project-two-storage):
+
+GROUP               TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID                                              HOST            CLIENT-ID
+project-two-storage iot.readings    0          987             987             0               project-two-storage-18331372-d44b-4c9e-b997-677de2547b6a /172.20.0.7     project-two-storage
+project-two-storage iot.readings    1          986             986             0               project-two-storage-18331372-d44b-4c9e-b997-677de2547b6a /172.20.0.7     project-two-storage
+project-two-storage iot.readings    2          983             983             0               project-two-storage-18331372-d44b-4c9e-b997-677de2547b6a /172.20.0.7     project-two-storage
+[10:42:09] Consumer lag (analytics-group):
+
+GROUP           TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID                                            HOST            CLIENT-ID
+analytics-group iot.readings    0          987             987             0               analytics-service-de617dd2-76bf-4929-a1c5-f5b95b52f206 /172.20.0.5     analytics-service
+analytics-group iot.readings    1          986             986             0               analytics-service-de617dd2-76bf-4929-a1c5-f5b95b52f206 /172.20.0.5     analytics-service
+analytics-group iot.readings    2          983             983             0               analytics-service-de617dd2-76bf-4929-a1c5-f5b95b52f206 /172.20.0.5     analytics-service
+[10:42:10] === devices=1000 | duration=30s ===
+{"started":true,"deviceCount":1000,"intervalMs":1000,"forceAlert":false,"durationMs":30000,"brokerMode":"kafka","topic":"iot.readings"}
+[10:42:53] devices=1000 expected=30000 received=29000 loss=3.33% throughput=966.67 msg/s
+[10:42:53] Consumer lag (project-two-storage):
+
+GROUP               TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID                                              HOST            CLIENT-ID
+project-two-storage iot.readings    0          10654           10654           0               project-two-storage-18331372-d44b-4c9e-b997-677de2547b6a /172.20.0.7     project-two-storage
+project-two-storage iot.readings    1          10652           10652           0               project-two-storage-18331372-d44b-4c9e-b997-677de2547b6a /172.20.0.7     project-two-storage
+project-two-storage iot.readings    2          10650           10650           0               project-two-storage-18331372-d44b-4c9e-b997-677de2547b6a /172.20.0.7     project-two-storage
+[10:42:54] Consumer lag (analytics-group):
+
+GROUP           TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID                                            HOST            CLIENT-ID
+analytics-group iot.readings    0          10654           10654           0               analytics-service-de617dd2-76bf-4929-a1c5-f5b95b52f206 /172.20.0.5     analytics-service
+analytics-group iot.readings    1          10652           10652           0               analytics-service-de617dd2-76bf-4929-a1c5-f5b95b52f206 /172.20.0.5     analytics-service
+analytics-group iot.readings    2          10650           10650           0               analytics-service-de617dd2-76bf-4929-a1c5-f5b95b52f206 /172.20.0.5     analytics-service
+[10:42:56] === devices=10000 | duration=30s ===
+{"started":true,"deviceCount":10000,"intervalMs":1000,"forceAlert":false,"durationMs":30000,"brokerMode":"kafka","topic":"iot.readings"}
+[10:43:38] devices=10000 expected=300000 received=86501 loss=71.17% throughput=2883.37 msg/s
+[10:43:38] Consumer lag (project-two-storage):
+
+GROUP               TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID                                              HOST            CLIENT-ID
+project-two-storage iot.readings    0          40321           105730          65409           project-two-storage-18331372-d44b-4c9e-b997-677de2547b6a /172.20.0.7     project-two-storage
+project-two-storage iot.readings    1          40319           105728          65409           project-two-storage-18331372-d44b-4c9e-b997-677de2547b6a /172.20.0.7     project-two-storage
+project-two-storage iot.readings    2          40317           105726          65409           project-two-storage-18331372-d44b-4c9e-b997-677de2547b6a /172.20.0.7     project-two-storage
+[10:43:40] Consumer lag (analytics-group):
+
+GROUP           TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID                                            HOST            CLIENT-ID
+analytics-group iot.readings    0          105730          105730          0               analytics-service-de617dd2-76bf-4929-a1c5-f5b95b52f206 /172.20.0.5     analytics-service
+analytics-group iot.readings    1          105728          105728          0               analytics-service-de617dd2-76bf-4929-a1c5-f5b95b52f206 /172.20.0.5     analytics-service
+analytics-group iot.readings    2          105726          105726          0               analytics-service-de617dd2-76bf-4929-a1c5-f5b95b52f206 /172.20.0.5     analytics-service
+[10:43:41] Scenario A (Kafka, acks=0) complete. Summary: /home/strucnjak/asterix_mitic/IOTS-Projects/project-two/docs/results/scenario_a/kafka_acks0_summary.csv
+strucnjak@machine:~/asterix_mitic/IOTS-Projects/project-two/benchmarks/kafka$ 

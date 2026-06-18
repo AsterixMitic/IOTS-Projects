@@ -1,0 +1,25 @@
+timestamp,container,cpu_perc,mem_usage,mem_perc,net_io
+2026-06-14T10:59:20,project-two-ingestion,49.14%,68.18MiB / 14.99GiB,0.44%,529kB / 2.08MB
+2026-06-14T10:59:20,project-two-storage,7.45%,58.68MiB / 14.99GiB,0.38%,3.29MB / 2.72MB
+2026-06-14T10:59:20,project-two-analytics,29.49%,38.91MiB / 14.99GiB,0.25%,2.03MB / 527kB
+2026-06-14T10:59:20,project-two-kafka,4.61%,565.6MiB / 14.99GiB,3.68%,2.85MB / 4.05MB
+2026-06-14T10:59:27,project-two-ingestion,12.06%,82.24MiB / 14.99GiB,0.54%,1.48MB / 5.76MB
+2026-06-14T10:59:27,project-two-storage,5.21%,72.4MiB / 14.99GiB,0.47%,7.75MB / 6.79MB
+2026-06-14T10:59:27,project-two-analytics,11.52%,43.68MiB / 14.99GiB,0.28%,5.46MB / 1.19MB
+2026-06-14T10:59:27,project-two-kafka,31.52%,833.1MiB / 14.99GiB,5.43%,10.2MB / 15.1MB
+2026-06-14T10:59:34,project-two-ingestion,11.21%,82.28MiB / 14.99GiB,0.54%,2.28MB / 8.92MB
+2026-06-14T10:59:34,project-two-storage,5.11%,81.23MiB / 14.99GiB,0.53%,13.6MB / 12.1MB
+2026-06-14T10:59:34,project-two-analytics,12.21%,44.54MiB / 14.99GiB,0.29%,8.93MB / 1.92MB
+2026-06-14T10:59:34,project-two-kafka,31.45%,932.8MiB / 14.99GiB,6.08%,16.6MB / 24.6MB
+2026-06-14T10:59:41,project-two-ingestion,11.16%,82.3MiB / 14.99GiB,0.54%,3.36MB / 13.2MB
+2026-06-14T10:59:41,project-two-storage,4.11%,86.05MiB / 14.99GiB,0.56%,18.7MB / 16.8MB
+2026-06-14T10:59:41,project-two-analytics,12.58%,54.11MiB / 14.99GiB,0.35%,12.4MB / 2.7MB
+2026-06-14T10:59:41,project-two-kafka,81.64%,947.9MiB / 14.99GiB,6.17%,22.1MB / 32.7MB
+2026-06-14T10:59:48,project-two-ingestion,4.45%,80.98MiB / 14.99GiB,0.53%,4.19MB / 16.4MB
+2026-06-14T10:59:48,project-two-storage,1.39%,85.57MiB / 14.99GiB,0.56%,23.2MB / 21MB
+2026-06-14T10:59:48,project-two-analytics,12.30%,53.95MiB / 14.99GiB,0.35%,15.5MB / 3.48MB
+2026-06-14T10:59:48,project-two-kafka,4.55%,930.1MiB / 14.99GiB,6.06%,28.9MB / 42.6MB
+2026-06-14T10:59:55,project-two-ingestion,1.35%,79.43MiB / 14.99GiB,0.52%,4.19MB / 16.4MB
+2026-06-14T10:59:55,project-two-storage,0.09%,85.42MiB / 14.99GiB,0.56%,23.2MB / 21.2MB
+2026-06-14T10:59:55,project-two-analytics,1.51%,53.23MiB / 14.99GiB,0.35%,15.6MB / 3.5MB
+2026-06-14T10:59:55,project-two-kafka,1.36%,929.2MiB / 14.99GiB,6.05%,28.9MB / 42.6MB

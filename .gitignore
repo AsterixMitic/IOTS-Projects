@@ -5,6 +5,7 @@
 .env
 .env.*
 **/.env
+!.env.example
 project-one/.env
 
 # PostgreSQL client credentials

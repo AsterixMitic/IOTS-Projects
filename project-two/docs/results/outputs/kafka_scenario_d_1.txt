@@ -1,0 +1,23 @@
+strucnjak@machine:~/asterix_mitic/IOTS-Projects/project-two/benchmarks/kafka$ bash scenario_d.sh 1
+[11:39:26] Scenario D (Kafka, acks=1) — recreating ingestion/analytics/storage
+[+] up 3/3
+ ✔ Container project-two-kafka     Healthy                                                                                                  0.8s
+ ✔ Container project-two-mosquitto Healthy                                                                                                  0.8s
+ ✔ Container project-two-ingestion Started                                                                                                  0.9s
+[+] up 3/3
+ ✔ Container project-two-mosquitto Healthy                                                                                                  2.9s
+ ✔ Container project-two-kafka     Healthy                                                                                                  2.9s
+ ✔ Container project-two-analytics Started                                                                                                  3.0s
+[+] up 4/4
+ ✔ Container project-two-mosquitto Healthy                                                                                                  0.8s
+ ✔ Container project-two-kafka     Healthy                                                                                                  0.8s
+ ✔ Container project-two-postgres  Healthy                                                                                                  0.8s
+ ✔ Container project-two-storage   Started                                                                                                  0.9s
+[11:39:34] Starting forced-alert simulation: 5 devices for 25s
+{"started":true,"deviceCount":5,"intervalMs":1000,"forceAlert":true,"durationMs":25000,"brokerMode":"kafka","topic":"iot.readings"}
+[11:40:04] Collecting analytics logs since 2026-06-14T11:39:34
+[ALERT] Window #1 | avg_temp=55.66°C > threshold=50°C | count=45 min=51.08 max=59.96 | avg_latency=3ms
+[ALERT] Window #2 | avg_temp=55.43°C > threshold=50°C | count=50 min=51.19 max=59.76 | avg_latency=1ms
+[ALERT] Window #3 | avg_temp=55.59°C > threshold=50°C | count=25 min=51.75 max=59.89 | avg_latency=1ms
+[11:40:04] Scenario D (Kafka, acks=1) complete. Log: /home/strucnjak/asterix_mitic/IOTS-Projects/project-two/docs/results/scenario_d/kafka_acks1_alerts.log
+strucnjak@machine:~/asterix_mitic/IOTS-Projects/project-two/benchmarks/kafka$ 

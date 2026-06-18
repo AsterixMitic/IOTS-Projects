@@ -1,0 +1,44 @@
+strucnjak@machine:~/asterix_mitic/IOTS-Projects/project-two/benchmarks/kafka$ bash scenario_c.sh -1
+[11:35:26] Scenario C (Kafka, acks=-1) — recreating ingestion/analytics/storage
+[+] up 3/3
+ ✔ Container project-two-mosquitto Healthy                                                                                                  0.8s
+ ✔ Container project-two-kafka     Healthy                                                                                                  0.8s
+ ✔ Container project-two-ingestion Started                                                                                                  0.9s
+[+] up 3/3
+ ✔ Container project-two-mosquitto Healthy                                                                                                  2.6s
+ ✔ Container project-two-kafka     Healthy                                                                                                  2.6s
+ ✔ Container project-two-analytics Started                                                                                                  2.8s
+[+] up 4/4
+ ✔ Container project-two-kafka     Healthy                                                                                                  1.0s
+ ✔ Container project-two-mosquitto Healthy                                                                                                  1.0s
+ ✔ Container project-two-postgres  Healthy                                                                                                  1.0s
+ ✔ Container project-two-storage   Started                                                                                                  1.1s
+[11:35:33] Baseline: 50 devices @ 1000ms (~50 msg/s) for 15s
+{"started":true,"deviceCount":50,"intervalMs":1000,"forceAlert":false,"durationMs":15000,"brokerMode":"kafka","topic":"iot.readings"}
+[11:35:50] Burst: 500 devices @ 100ms (~5000 msg/s) for 10s
+{"started":true,"deviceCount":500,"intervalMs":100,"forceAlert":false,"durationMs":10000,"brokerMode":"kafka","topic":"iot.readings"}
+[11:36:01] Consumer lag right after burst:
+
+GROUP               TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID        HOST            CLIENT-ID
+project-two-storage iot.readings    0          981287          987186          5899            project-two-storage-0b163604-50c6-4a8b-9962-32a3b9d3803d /172.20.0.7     project-two-storage
+project-two-storage iot.readings    1          981284          987181          5897            project-two-storage-0b163604-50c6-4a8b-9962-32a3b9d3803d /172.20.0.7     project-two-storage
+project-two-storage iot.readings    2          981284          987182          5898            project-two-storage-0b163604-50c6-4a8b-9962-32a3b9d3803d /172.20.0.7     project-two-storage
+
+GROUP           TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID  HOST            CLIENT-ID
+analytics-group iot.readings    0          987186          987186          0               analytics-service-aeae3412-77bf-4fa7-b8e1-a646b57536ec /172.20.0.5     analytics-service
+analytics-group iot.readings    1          987181          987181          0               analytics-service-aeae3412-77bf-4fa7-b8e1-a646b57536ec /172.20.0.5     analytics-service
+analytics-group iot.readings    2          987182          987182          0               analytics-service-aeae3412-77bf-4fa7-b8e1-a646b57536ec /172.20.0.5     analytics-service
+[11:36:05] Recovery: monitoring backlog drain for 30s
+[11:37:26] Consumer lag after recovery:
+
+GROUP               TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID        HOST            CLIENT-ID
+project-two-storage iot.readings    0          987186          987186          0               project-two-storage-0b163604-50c6-4a8b-9962-32a3b9d3803d /172.20.0.7     project-two-storage
+project-two-storage iot.readings    1          987181          987181          0               project-two-storage-0b163604-50c6-4a8b-9962-32a3b9d3803d /172.20.0.7     project-two-storage
+project-two-storage iot.readings    2          987182          987182          0               project-two-storage-0b163604-50c6-4a8b-9962-32a3b9d3803d /172.20.0.7     project-two-storage
+
+GROUP           TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID  HOST            CLIENT-ID
+analytics-group iot.readings    0          987186          987186          0               analytics-service-aeae3412-77bf-4fa7-b8e1-a646b57536ec /172.20.0.5     analytics-service
+analytics-group iot.readings    1          987181          987181          0               analytics-service-aeae3412-77bf-4fa7-b8e1-a646b57536ec /172.20.0.5     analytics-service
+analytics-group iot.readings    2          987182          987182          0               analytics-service-aeae3412-77bf-4fa7-b8e1-a646b57536ec /172.20.0.5     analytics-service
+[11:37:29] Scenario C (Kafka, acks=-1) complete. Timeline: /home/strucnjak/asterix_mitic/IOTS-Projects/project-two/docs/results/scenario_c/kafka_acks-1_timeline.csv | Docker stats: /home/strucnjak/asterix_mitic/IOTS-Projects/project-two/docs/results/scenario_c/kafka_acks-1_dockerstats.csv
+strucnjak@machine:~/asterix_mitic/IOTS-Projects/project-two/benchmarks/kafka$ 

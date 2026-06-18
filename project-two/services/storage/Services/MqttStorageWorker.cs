@@ -1,0 +1,196 @@
+using System.Diagnostics;
+using System.Threading.Channels;
+using MQTTnet;
+using MQTTnet.Client;
+using MQTTnet.Formatter;
+using MQTTnet.Protocol;
+using StorageService.Infrastructure;
+using StorageService.Models;
+
+namespace StorageService.Services;
+
+public sealed class MqttStorageWorker(
+    StorageOptions options,
+    ReadingPayloadParser parser,
+    PostgresReadingBatchWriter writer,
+    StorageMetrics metrics,
+    ILogger<MqttStorageWorker> logger) : IStorageWorker
+{
+    private readonly Channel<QueuedReading> _channel = Channel.CreateBounded<QueuedReading>(new BoundedChannelOptions(Math.Max(options.BatchSize * 10, 1_000))
+    {
+        AllowSynchronousContinuations = false,
+        FullMode = BoundedChannelFullMode.Wait,
+        SingleReader = true,
+        SingleWriter = false
+    });
+
+    public async Task RunAsync(CancellationToken cancellationToken)
+    {
+        var processingTask = ProcessBatchesAsync(cancellationToken);
+        var consumeTask = ConsumeAsync(cancellationToken);
+
+        await Task.WhenAll(processingTask, consumeTask).ConfigureAwait(false);
+    }
+
+    private async Task ConsumeAsync(CancellationToken cancellationToken)
+    {
+        var factory = new MqttFactory();
+        var clientOptions = CreateClientOptions();
+        IMqttClient? client = null;
+
+        try
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                try
+                {
+                    if (client is null || !client.IsConnected)
+                    {
+                        client?.Dispose();
+                        client = factory.CreateMqttClient();
+                        client.ApplicationMessageReceivedAsync += async args =>
+                        {
+                            try
+                            {
+                                var payload = args.ApplicationMessage.ConvertPayloadToString();
+                                var reading = parser.Parse(payload);
+                                var queuedReading = new QueuedReading(
+                                    reading.DeviceId,
+                                    0L,
+                                    reading.RecordedAt,
+                                    reading.Readings,
+                                    Guid.NewGuid().ToString("N"));
+
+                                await _channel.Writer.WriteAsync(queuedReading, cancellationToken).ConfigureAwait(false);
+                                metrics.RecordReceived();
+                            }
+                            catch (Exception ex) when (ex is not OperationCanceledException)
+                            {
+                                metrics.RecordFailed();
+                                logger.LogWarning(ex, "Failed to process MQTT message.");
+                            }
+                        };
+
+                        await client.ConnectAsync(clientOptions, cancellationToken).ConfigureAwait(false);
+
+                        var subscribeOptions = new MqttClientSubscribeOptionsBuilder()
+                            .WithTopicFilter(filter => filter
+                                .WithTopic(options.MqttTopic)
+                                .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce))
+                            .Build();
+
+                        await client.SubscribeAsync(subscribeOptions, cancellationToken).ConfigureAwait(false);
+                        logger.LogInformation("MQTT subscriber connected to {BrokerUrl} and subscribed to {Topic}.", options.BrokerUri, options.MqttTopic);
+                    }
+
+                    await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+                {
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    logger.LogWarning(ex, "MQTT connection loop failed; retrying.");
+
+                    // MQTTnet leaves the client's internal connection state stuck as "pending"
+                    // after an unexpected disconnect, so ConnectAsync on the same instance would
+                    // throw forever. Discard it and connect with a fresh client on the next pass.
+                    client?.Dispose();
+                    client = null;
+
+                    await Task.Delay(TimeSpan.FromSeconds(2), cancellationToken).ConfigureAwait(false);
+                }
+            }
+        }
+        finally
+        {
+            client?.Dispose();
+        }
+
+        _channel.Writer.TryComplete();
+    }
+
+    private async Task ProcessBatchesAsync(CancellationToken cancellationToken)
+    {
+        var buffer = new List<QueuedReading>(options.BatchSize);
+        using var timer = new PeriodicTimer(options.FlushInterval);
+        Task<bool>? tickTask = null;
+
+        while (await _channel.Reader.WaitToReadAsync(cancellationToken).ConfigureAwait(false))
+        {
+            while (_channel.Reader.TryRead(out var item))
+            {
+                buffer.Add(item);
+
+                if (buffer.Count >= options.BatchSize)
+                {
+                    await FlushAsync(buffer, cancellationToken).ConfigureAwait(false);
+                }
+            }
+
+            if (buffer.Count == 0)
+            {
+                continue;
+            }
+
+            var waitTask = _channel.Reader.WaitToReadAsync(cancellationToken).AsTask();
+
+            // PeriodicTimer.WaitForNextTickAsync throws if called again while a previous
+            // call is still pending, so reuse the in-flight tick task across iterations
+            // (it only loses the race against waitTask, never gets awaited otherwise).
+            tickTask ??= timer.WaitForNextTickAsync(cancellationToken).AsTask();
+
+            var completed = await Task.WhenAny(waitTask, tickTask).ConfigureAwait(false);
+            if (completed == tickTask)
+            {
+                await FlushAsync(buffer, cancellationToken).ConfigureAwait(false);
+                tickTask = null;
+            }
+        }
+
+        if (buffer.Count > 0)
+        {
+            await FlushAsync(buffer, CancellationToken.None).ConfigureAwait(false);
+        }
+    }
+
+    private async Task FlushAsync(List<QueuedReading> buffer, CancellationToken cancellationToken)
+    {
+        if (buffer.Count == 0)
+        {
+            return;
+        }
+
+        var batch = buffer.ToArray();
+
+        var started = Stopwatch.GetTimestamp();
+        try
+        {
+            await writer.PersistAsync(batch, cancellationToken).ConfigureAwait(false);
+            buffer.Clear();
+            metrics.RecordPersisted(batch.Length, Stopwatch.GetElapsedTime(started));
+        }
+        catch (Exception ex)
+        {
+            metrics.RecordFailed();
+            logger.LogError(ex, "Failed to persist MQTT batch of {Count} message(s).", batch.Length);
+        }
+    }
+
+    private MqttClientOptions CreateClientOptions()
+    {
+        var builder = new MqttClientOptionsBuilder()
+            .WithClientId($"storage-mqtt-{Environment.ProcessId}")
+            .WithTcpServer(options.BrokerUri.Host, options.BrokerUri.Port > 0 ? options.BrokerUri.Port : 1883)
+            .WithProtocolVersion(MqttProtocolVersion.V500);
+
+        if (!string.IsNullOrWhiteSpace(options.MqttUsername))
+        {
+            builder.WithCredentials(options.MqttUsername, options.MqttPassword);
+        }
+
+        return builder.Build();
+    }
+}
+
