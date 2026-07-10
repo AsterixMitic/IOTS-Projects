@@ -6,9 +6,12 @@ public sealed class StorageMetrics
     private long _persistedMessages;
     private long _failedMessages;
     private long _persistedBatches;
+    private long _republishedMessages;
     private long _lastPersistDurationMs;
 
     public void RecordReceived() => Interlocked.Increment(ref _receivedMessages);
+
+    public void RecordRepublished() => Interlocked.Increment(ref _republishedMessages);
 
     public void RecordPersisted(int count, TimeSpan duration)
     {
@@ -25,6 +28,7 @@ public sealed class StorageMetrics
         persistedMessages = Interlocked.Read(ref _persistedMessages),
         failedMessages = Interlocked.Read(ref _failedMessages),
         persistedBatches = Interlocked.Read(ref _persistedBatches),
+        republishedMessages = Interlocked.Read(ref _republishedMessages),
         lastPersistDurationMs = Interlocked.Read(ref _lastPersistDurationMs)
     };
 }

@@ -10,6 +10,12 @@ public sealed record StorageOptions
 
     public string MqttTopic { get; init; } = "iot/readings";
 
+    // Topic na koji Storage re-publikuje perzistirana očitavanja (Projekat 3).
+    public string MqttStoredTopic { get; init; } = "iot/stored";
+
+    // Da li Storage re-publikuje na MqttStoredTopic posle upisa u bazu.
+    public bool Republish { get; init; } = true;
+
     public string KafkaTopic { get; init; } = "iot.readings";
 
     [Range(1, 10_000)]
@@ -47,6 +53,8 @@ public sealed record StorageOptions
             Mode = brokerMode,
             BrokerUrl = brokerUrl,
             MqttTopic = configuration["MQTT_TOPIC"] ?? "iot/readings",
+            MqttStoredTopic = configuration["MQTT_STORED_TOPIC"] ?? "iot/stored",
+            Republish = ParseBool(configuration["STORAGE_REPUBLISH"], true),
             KafkaTopic = configuration["KAFKA_TOPIC"] ?? "iot.readings",
             BatchSize = ParseInt(configuration["STORAGE_BATCH_SIZE"] ?? configuration["BATCH_SIZE"], 500),
             FlushIntervalMilliseconds = ParseInt(configuration["STORAGE_FLUSH_INTERVAL_MS"] ?? configuration["FLUSH_INTERVAL_MS"], 1_000),

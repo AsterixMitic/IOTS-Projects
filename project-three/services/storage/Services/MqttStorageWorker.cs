@@ -13,6 +13,7 @@ public sealed class MqttStorageWorker(
     StorageOptions options,
     ReadingPayloadParser parser,
     PostgresReadingBatchWriter writer,
+    IStoredReadingPublisher publisher,
     StorageMetrics metrics,
     ILogger<MqttStorageWorker> logger) : IStorageWorker
 {
@@ -146,6 +147,9 @@ public sealed class MqttStorageWorker(
             await writer.PersistAsync(batch, cancellationToken).ConfigureAwait(false);
             buffer.Clear();
             metrics.RecordPersisted(batch.Length, Stopwatch.GetElapsedTime(started));
+
+            // Projekat 3: re-publikuj perzistirana očitavanja na iot/stored (best-effort).
+            await publisher.PublishAsync(batch, cancellationToken).ConfigureAwait(false);
         }
         catch (Exception ex)
         {

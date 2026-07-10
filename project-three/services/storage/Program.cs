@@ -13,6 +13,7 @@ builder.Services.AddSingleton(_ => NpgsqlDataSource.Create(storageOptions.Connec
 builder.Services.AddSingleton<ReadingPayloadParser>();
 builder.Services.AddSingleton<StorageMetrics>();
 builder.Services.AddSingleton<PostgresReadingBatchWriter>();
+builder.Services.AddSingleton<IStoredReadingPublisher, MqttStoredReadingPublisher>();
 builder.Services.AddSingleton<IStorageWorker>(sp =>
 {
     var options = sp.GetRequiredService<StorageOptions>();

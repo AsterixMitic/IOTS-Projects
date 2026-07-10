@@ -70,6 +70,7 @@ services:
       ASPNETCORE_URLS: http://+:8080
       MQTT_TOPIC: ${MQTT_TOPIC:-iot/readings}
       MQTT_STORED_TOPIC: ${MQTT_STORED_TOPIC:-iot/stored}
+      STORAGE_REPUBLISH: ${STORAGE_REPUBLISH:-true}
     ports:
       - "8080:8080"
     depends_on:
@@ -89,9 +90,8 @@ services:
       SERVICE_NAME: analytics
       PORT: 3001
       BROKER_MODE: ${BROKER_MODE:-mqtt}
-      # Faza 0: Analytics je pretplaćen na sirovi topic (parnost sa P2).
-      # Faza 1 će ga prebaciti na iot/stored.
-      MQTT_TOPIC: ${MQTT_TOPIC:-iot/readings}
+      # Faza 1: Analytics se pretplaćuje na iot/stored (topic na koji Storage re-publikuje).
+      MQTT_TOPIC: ${MQTT_STORED_TOPIC:-iot/stored}
       MQTT_QOS: ${MQTT_QOS:-1}
       WINDOW_SECONDS: ${WINDOW_SECONDS:-10}
       ALERT_THRESHOLD: ${ALERT_THRESHOLD:-50}

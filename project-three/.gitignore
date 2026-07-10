@@ -5,6 +5,7 @@ npm-debug.log*
 # .NET
 bin/
 obj/
+.vs/
 
 # Python / MaaS (kasnije faze)
 __pycache__/
