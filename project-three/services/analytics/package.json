@@ -1,0 +1,13 @@
+{
+  "name": "project-three-analytics-node",
+  "private": true,
+  "version": "0.1.0",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "kafkajs": "^2.2.4",
+    "mqtt": "^5.10.1"
+  }
+}
