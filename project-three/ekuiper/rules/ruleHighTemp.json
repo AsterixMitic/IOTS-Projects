@@ -1,0 +1,7 @@
+{
+  "id": "ruleHighTemp",
+  "sql": "SELECT 'HIGH_TEMP' AS type, deviceId, readings->temperature AS value, 'warning' AS severity, 'ruleHighTemp' AS rule, timestamp AS ts FROM iotStream WHERE readings->temperature > 40",
+  "actions": [
+    { "mqtt": { "server": "tcp://mosquitto:1883", "topic": "iot/events", "qos": 1, "sendSingle": true } }
+  ]
+}

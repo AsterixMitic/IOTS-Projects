@@ -102,6 +102,35 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
+  # eKuiper — streaming/CEP engine. Pretplaćen na iot/stored, pravila emituju
+  # događaje od interesa na iot/events (Projekat 3, Faza 3).
+  ekuiper:
+    image: lfedge/ekuiper:1.14
+    container_name: project-three-ekuiper
+    environment:
+      # Override MQTT source servera (etc/mqtt_source.yaml -> default.server).
+      MQTT_SOURCE__DEFAULT__SERVER: "tcp://mosquitto:1883"
+      MQTT_SOURCE__DEFAULT__QOS: "1"
+      KUIPER__BASIC__CONSOLELOG: "true"
+    ports:
+      - "9081:9081"
+    depends_on:
+      mosquitto:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Jednokratni init: registruje stream + pravila preko eKuiper REST API-ja.
+  ekuiper-init:
+    image: curlimages/curl:latest
+    container_name: project-three-ekuiper-init
+    depends_on:
+      ekuiper:
+        condition: service_started
+    volumes:
+      - ./ekuiper:/defs:ro
+    entrypoint: ["sh", "/defs/provision.sh"]
+    restart: "no"
+
   # MaaS — Model-as-a-Service (Python + FastAPI + scikit-learn).
   # Klasifikacija kvaliteta vazduha; Analytics ga zove preko REST-a (Faza 4).
   maas:

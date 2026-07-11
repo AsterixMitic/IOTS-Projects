@@ -1,0 +1,7 @@
+{
+  "id": "rulePollutionSpike",
+  "sql": "SELECT 'POLLUTION_SPIKE' AS type, deviceId, readings->nox_gt AS nox, readings->no2_gt AS no2, 'critical' AS severity, 'rulePollutionSpike' AS rule, timestamp AS ts FROM iotStream WHERE readings->nox_gt > 400 AND readings->no2_gt > 200",
+  "actions": [
+    { "mqtt": { "server": "tcp://mosquitto:1883", "topic": "iot/events", "qos": 1, "sendSingle": true } }
+  ]
+}

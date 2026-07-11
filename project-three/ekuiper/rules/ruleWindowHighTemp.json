@@ -1,0 +1,7 @@
+{
+  "id": "ruleWindowHighTemp",
+  "sql": "SELECT 'WINDOW_HIGH_TEMP' AS type, AVG(readings->temperature) AS value, COUNT(*) AS samples, 'warning' AS severity, 'ruleWindowHighTemp' AS rule FROM iotStream GROUP BY TUMBLINGWINDOW(ss, 10) HAVING AVG(readings->temperature) > 35",
+  "actions": [
+    { "mqtt": { "server": "tcp://mosquitto:1883", "topic": "iot/events", "qos": 1, "sendSingle": true } }
+  ]
+}
