@@ -1,0 +1,106 @@
+{
+  "model_version": "1.0.0",
+  "model_type": "RandomForestClassifier",
+  "library": "scikit-learn 1.5.2",
+  "task": "air-quality-classification",
+  "trained_at": "2026-07-11T22:48:37.837424+00:00",
+  "features": [
+    "pt08_s1_co",
+    "pt08_s2_nmhc",
+    "pt08_s3_nox",
+    "pt08_s4_no2",
+    "pt08_s5_o3",
+    "temperature",
+    "relative_humidity",
+    "absolute_humidity"
+  ],
+  "classes": [
+    "good",
+    "moderate",
+    "unhealthy"
+  ],
+  "label_thresholds": {
+    "good_below": {
+      "co_gt": 2.0,
+      "no2_gt": 100.0,
+      "nox_gt": 150.0
+    },
+    "unhealthy_at_or_above": {
+      "co_gt": 3.5,
+      "no2_gt": 160.0,
+      "nox_gt": 280.0
+    }
+  },
+  "dataset_rows_labeled": 7258,
+  "class_distribution": {
+    "good": 2229,
+    "moderate": 2335,
+    "unhealthy": 2694
+  },
+  "split": {
+    "train": 5080,
+    "val": 1089,
+    "test": 1089
+  },
+  "metrics": {
+    "val_accuracy": 0.8705,
+    "test_accuracy": 0.8494,
+    "test_report": {
+      "good": {
+        "precision": 0.889937106918239,
+        "recall": 0.844776119402985,
+        "f1-score": 0.8667687595712098,
+        "support": 335.0
+      },
+      "moderate": {
+        "precision": 0.792507204610951,
+        "recall": 0.7857142857142857,
+        "f1-score": 0.7890961262553802,
+        "support": 350.0
+      },
+      "unhealthy": {
+        "precision": 0.8655660377358491,
+        "recall": 0.9084158415841584,
+        "f1-score": 0.8864734299516909,
+        "support": 404.0
+      },
+      "accuracy": 0.8494031221303948,
+      "macro avg": {
+        "precision": 0.8493367830883464,
+        "recall": 0.8463020822338098,
+        "f1-score": 0.847446105259427,
+        "support": 1089.0
+      },
+      "weighted avg": {
+        "precision": 0.8495823064065436,
+        "recall": 0.8494031221303948,
+        "f1-score": 0.8491151922371178,
+        "support": 1089.0
+      }
+    },
+    "test_confusion_matrix": {
+      "labels": [
+        "good",
+        "moderate",
+        "unhealthy"
+      ],
+      "matrix": [
+        [
+          283,
+          35,
+          17
+        ],
+        [
+          35,
+          275,
+          40
+        ],
+        [
+          0,
+          37,
+          367
+        ]
+      ]
+    }
+  }
+}
