@@ -2,101 +2,116 @@
 
 /**
  * Tumbling Window — fiksni vremenski prozor koji se ne preklapa.
- * Svakih windowSeconds sekundi računa prosek temperature.
- * Ako je prosek > alertThreshold, ispisuje ALERT u log.
+ * Svakih windowSeconds sekundi:
+ *  - računa prosek/min/max temperature i latenciju,
+ *  - računa PROSEČNO očitavanje (po svim numeričkim senzorima) za MaaS klasifikaciju,
+ *  - okida ALERT ako je prosek temperature > alertThreshold,
+ *  - poziva onFlush(result) sa objedinjenim rezultatom prozora.
  */
 class TumblingWindow {
-  constructor(windowSeconds, alertThreshold) {
-    this.windowSeconds   = windowSeconds;
-    this.alertThreshold  = alertThreshold;
-    this.temperatures    = [];   // vrednosti u tekućem prozoru
-    this.windowCount     = 0;    // koliko je prozora prošlo
-    this.alertCount      = 0;    // koliko je alerta okidano
-    this.timer           = null;
+  constructor(windowSeconds, alertThreshold, onFlush) {
+    this.windowSeconds  = windowSeconds;
+    this.alertThreshold = alertThreshold;
+    this.onFlush        = onFlush || (() => {});
+    this.windowCount    = 0;
+    this.alertCount     = 0;
+    this.timer          = null;
+    this._reset();
+  }
+
+  _reset() {
+    this.temperatures = [];   // { value, deviceId, latencyMs }
+    this.featureSums  = {};   // senzor -> suma vrednosti
+    this.featureCount = 0;    // broj očitavanja u prozoru
   }
 
   start() {
     if (this.timer) return;
-
-    this.timer = setInterval(() => {
-      this._flush();
-    }, this.windowSeconds * 1000);
-
-    console.log(
-      `[tumbling-window] Started — windowSeconds=${this.windowSeconds} alertThreshold=${this.alertThreshold}°C`
-    );
+    this.timer = setInterval(() => this._flush(), this.windowSeconds * 1000);
+    console.log(`[tumbling-window] Started — windowSeconds=${this.windowSeconds} alertThreshold=${this.alertThreshold}°C`);
   }
 
   stop() {
-    if (this.timer) {
-      clearInterval(this.timer);
-      this.timer = null;
-    }
+    if (this.timer) { clearInterval(this.timer); this.timer = null; }
   }
 
   /**
-   * Dodaj novu temperaturu u tekući prozor.
-   * @param {number} temperature
+   * @param {object} readings     - ceo readings objekat (svi senzori)
    * @param {string} deviceId
-   * @param {number} msgTimestamp - timestamp iz payloada (za latenciju Scenario D)
+   * @param {number} msgTimestamp - originalni timestamp (za latenciju)
    */
-  addReading(temperature, deviceId, msgTimestamp) {
-    const receiveTime = Date.now();
-    const latencyMs   = msgTimestamp ? receiveTime - msgTimestamp : null;
-
-    this.temperatures.push({ value: temperature, deviceId, latencyMs });
+  addReading(readings, deviceId, msgTimestamp) {
+    const temp = readings ? readings.temperature : undefined;
+    if (typeof temp === 'number') {
+      const latencyMs = msgTimestamp ? Date.now() - msgTimestamp : null;
+      this.temperatures.push({ value: temp, deviceId, latencyMs });
+    }
+    for (const [key, val] of Object.entries(readings || {})) {
+      if (typeof val === 'number') {
+        this.featureSums[key] = (this.featureSums[key] || 0) + val;
+      }
+    }
+    this.featureCount++;
   }
 
-  /**
-   * Zatvori prozor, izračunaj statistiku, okini alert ako treba.
-   */
+  _avgFeatures() {
+    if (this.featureCount === 0) return null;
+    const avg = {};
+    for (const [key, sum] of Object.entries(this.featureSums)) {
+      avg[key] = Math.round((sum / this.featureCount) * 1000) / 1000;
+    }
+    return avg;
+  }
+
   _flush() {
     this.windowCount++;
     const count = this.temperatures.length;
+    const avgFeatures = this._avgFeatures();
 
+    let result;
     if (count === 0) {
-      console.log(`[window #${this.windowCount}] No readings in window.`);
-      this.temperatures = [];
-      return;
-    }
-
-    const values  = this.temperatures.map(r => r.value);
-    const avg     = values.reduce((a, b) => a + b, 0) / count;
-    const min     = Math.min(...values);
-    const max     = Math.max(...values);
-    const latencies = this.temperatures
-      .map(r => r.latencyMs)
-      .filter(l => l !== null);
-    const avgLatency = latencies.length
-      ? Math.round(latencies.reduce((a, b) => a + b, 0) / latencies.length)
-      : null;
-
-    const avgRounded = Math.round(avg * 100) / 100;
-    const isAlert    = avgRounded > this.alertThreshold;
-
-    if (isAlert) {
-      this.alertCount++;
-      console.error(
-        `[ALERT] Window #${this.windowCount} | avg_temp=${avgRounded}°C > threshold=${this.alertThreshold}°C | ` +
-        `count=${count} min=${min} max=${max} | avg_latency=${avgLatency}ms`
-      );
+      console.log(`[window #${this.windowCount}] No temperature readings.`);
+      result = {
+        windowNumber: this.windowCount, count: 0,
+        avgTemp: null, min: null, max: null, avgLatency: null,
+        isAlert: false, avgFeatures,
+      };
     } else {
-      console.log(
-        `[window #${this.windowCount}] avg_temp=${avgRounded}°C | ` +
-        `count=${count} min=${min} max=${max} | avg_latency=${avgLatency}ms`
-      );
+      const values    = this.temperatures.map(r => r.value);
+      const avg       = values.reduce((a, b) => a + b, 0) / count;
+      const min       = Math.min(...values);
+      const max       = Math.max(...values);
+      const latencies = this.temperatures.map(r => r.latencyMs).filter(l => l !== null);
+      const avgLatency = latencies.length
+        ? Math.round(latencies.reduce((a, b) => a + b, 0) / latencies.length)
+        : null;
+      const avgTemp   = Math.round(avg * 100) / 100;
+      const isAlert   = avgTemp > this.alertThreshold;
+
+      if (isAlert) {
+        this.alertCount++;
+        console.error(`[ALERT] Window #${this.windowCount} | avg_temp=${avgTemp}°C > threshold=${this.alertThreshold}°C | count=${count} min=${min} max=${max} | avg_latency=${avgLatency}ms`);
+      } else {
+        console.log(`[window #${this.windowCount}] avg_temp=${avgTemp}°C | count=${count} min=${min} max=${max} | avg_latency=${avgLatency}ms`);
+      }
+
+      result = { windowNumber: this.windowCount, count, avgTemp, min, max, avgLatency, isAlert, avgFeatures };
     }
 
-    // Reset za sledeći prozor
-    this.temperatures = [];
+    this._reset();
+
+    // Ne blokiraj timer — onFlush može biti async (poziv MaaS-a, publish).
+    Promise.resolve()
+      .then(() => this.onFlush(result))
+      .catch(err => console.error('[tumbling-window] onFlush error:', err.message));
   }
 
   stats() {
     return {
-      windowCount:  this.windowCount,
-      alertCount:   this.alertCount,
-      windowSeconds: this.windowSeconds,
-      alertThreshold: this.alertThreshold,
+      windowCount:       this.windowCount,
+      alertCount:        this.alertCount,
+      windowSeconds:     this.windowSeconds,
+      alertThreshold:    this.alertThreshold,
       currentBufferSize: this.temperatures.length,
     };
   }

@@ -90,8 +90,13 @@ services:
       SERVICE_NAME: analytics
       PORT: 3001
       BROKER_MODE: ${BROKER_MODE:-mqtt}
-      # Faza 1: Analytics se pretplaćuje na iot/stored (topic na koji Storage re-publikuje).
-      MQTT_TOPIC: ${MQTT_STORED_TOPIC:-iot/stored}
+      # Faza 4: Analytics konzumira iot/stored (očitavanja) + iot/events (eKuiper CEP),
+      # zove MaaS po prozoru i objedinjeni rezime publikuje na iot/analytics.
+      MQTT_STORED_TOPIC: ${MQTT_STORED_TOPIC:-iot/stored}
+      MQTT_EVENTS_TOPIC: ${MQTT_EVENTS_TOPIC:-iot/events}
+      MQTT_ANALYTICS_TOPIC: ${MQTT_ANALYTICS_TOPIC:-iot/analytics}
+      MAAS_URL: ${MAAS_URL:-http://maas:8000}
+      MAAS_ENABLED: ${MAAS_ENABLED:-true}
       MQTT_QOS: ${MQTT_QOS:-1}
       WINDOW_SECONDS: ${WINDOW_SECONDS:-10}
       ALERT_THRESHOLD: ${ALERT_THRESHOLD:-50}
@@ -100,6 +105,8 @@ services:
     depends_on:
       mosquitto:
         condition: service_healthy
+      maas:
+        condition: service_started
     restart: unless-stopped
 
   # eKuiper — streaming/CEP engine. Pretplaćen na iot/stored, pravila emituju

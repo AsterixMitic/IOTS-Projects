@@ -3,7 +3,7 @@
 Prati šta je stvarno urađeno, po fazama. Plan (ciljna slika) je u [../PLAN.md](../PLAN.md);
 ovaj dokument beleži realizaciju i odluke donete usput. Ažurira se posle svake faze.
 
-**Status:** Faze 0–3 završene. U toku: Faza 4 (Analytics++).
+**Status:** Faze 0–4 završene. U toku: Faza 5 (Blazor web).
 
 ---
 
@@ -28,6 +28,7 @@ flowchart LR
     T1(["iot/readings"])
     T2(["iot/stored"])
     T3(["iot/events"])
+    T4(["iot/analytics"])
 
     ING -->|publish| T1
     T1 -->|subscribe| STOR
@@ -38,16 +39,16 @@ flowchart LR
     EK -->|CEP događaji| T3
     T3 -->|subscribe| AN
     AN -->|"REST /predict"| MAAS
+    AN -->|publish| T4
     AN -->|"REST / SSE"| WEB
-    T2 -.->|MQTT-WS| WEB
-    T3 -.->|MQTT-WS| WEB
+    T4 -.->|MQTT-WS| WEB
 
     classDef done fill:#d4edda,stroke:#28a745,color:#155724;
     classDef todo fill:#eef1f4,stroke:#adb5bd,color:#495057,stroke-dasharray:5 5;
     classDef topic fill:#fff3cd,stroke:#ffc107,color:#856404;
     class ING,STOR,PG,AN,MAAS,EK done;
     class WEB todo;
-    class T1,T2,T3 topic;
+    class T1,T2,T3,T4 topic;
 ```
 
 > Legenda: **pun zeleni okvir** = implementirano (Faze 0–2), **isprekidan sivi** = predstoji
@@ -70,8 +71,9 @@ MQTT topici:
 | Topic | Producer | Consumer | Sadržaj |
 |---|---|---|---|
 | `iot/readings` | Ingestion | Storage | sirova očitavanja (`{deviceId, timestamp, readings{13 senzora}}`) |
-| `iot/stored` | Storage | Analytics (i uskoro eKuiper) | perzistirana očitavanja + `storedAt` |
-| `iot/events` | eKuiper *(Faza 3)* | Analytics | CEP događaji od interesa |
+| `iot/stored` | Storage | Analytics, eKuiper | perzistirana očitavanja + `storedAt` |
+| `iot/events` | eKuiper | Analytics | CEP događaji od interesa |
+| `iot/analytics` | Analytics | web (Faza 5) | objedinjeni rezime `ANALYTICS_SUMMARY` |
 
 ---
 
@@ -192,7 +194,45 @@ prikaže `HIGH_TEMP` / `WINDOW_HIGH_TEMP` događaje.
 
 ---
 
-## 6. Da li bi trenirani model bio validan za neki drugi dataset?
+## 6. Faza 4 — Analytics++ (integracija CEP + ML)
+
+Analytics je proširen da objedini tri izvora analize i izloži jedinstveni rezultat. Ovo je
+integraciona faza u kojoj se eKuiper događaji i MaaS predikcije spajaju.
+
+### 6.1 Šta radi
+
+1. Pretplata na **`iot/stored`** (očitavanja) i **`iot/events`** (eKuiper CEP) preko jednog MQTT
+   klijenta (`mqtt-bus.js`, multi-topic subscribe + publish).
+2. **Tumbling window** (10 s) računa prosek/min/max temperature + latenciju i akumulira
+   **prosečno očitavanje** po svim senzorima.
+3. Po zatvaranju prozora zove **MaaS `/predict`** sa prosečnim očitavanjem → klasa kvaliteta
+   vazduha. Robustno: timeout + graceful degradacija (`maas-client.js`; ako MaaS padne,
+   predikcija je `null`, servis nastavlja).
+4. Objedinjeni **`ANALYTICS_SUMMARY`** (prozor + ML klasa + alarmi) se publikuje na
+   **`iot/analytics`** (ulaz za web dashboard).
+
+### 6.2 Novi REST endpointi (3001)
+
+`/events` (CEP događaji + brojači po tipu), `/predictions` (MaaS predikcije), `/alerts`
+(objedinjeni alarmi: temperaturni prag + kritični CEP + ML `unhealthy`). `/health` sada sadrži i
+broj događaja/predikcija i status MaaS-a.
+
+### 6.3 Odluke
+
+- Analytics je u P3 **MQTT-native** — Kafka putanja (`kafka-consumer.js`) i `kafkajs` zavisnost
+  su uklonjeni iz ovog servisa (eKuiper i tok događaja su isključivo MQTT).
+- MaaS se zove **jednom po prozoru** (ne po svakoj poruci) da se ne preplavi.
+
+### 6.4 Verifikacija (stvarno pokrenuto lokalno)
+
+- `node --check` prolazi za sva 4 modula; `docker compose config` validan.
+- **Integracioni test** protiv realnog MaaS-a (uvicorn): `maas-client.predict()` vraća klasu;
+  window prosek tačan (avgTemp=25 za ulaze 20/30); `onFlush → MaaS → klasa` radi; MaaS status
+  `reachable`, 0 grešaka. Runtime kroz Docker po dogovoru nije pokretan.
+
+---
+
+## 7. Da li bi trenirani model bio validan za neki drugi dataset?
 
 Kratko: **artefakt (istrenirani model) je specifičan za ovaj dataset i ne bi se dobro preneo na
 proizvoljan drugi dataset — ali metodologija i kod (`train.py`) jesu ponovo upotrebljivi uz
@@ -226,11 +266,11 @@ tokom koji analizira.
 
 ---
 
-## 7. Naredni koraci
+## 8. Naredni koraci
 
 | Faza | Sadržaj | Status |
 |---|---|---|
 | 3 | eKuiper (CEP): stream nad `iot/stored`, pravila → `iot/events` | ✅ završeno |
-| 4 | Analytics++: konzum `iot/events` + poziv MaaS `/predict` + novi endpointi | ⏳ u toku |
-| 5 | Blazor web dashboard | ⬜ |
+| 4 | Analytics++: konzum `iot/events` + poziv MaaS `/predict` + novi endpointi | ✅ završeno |
+| 5 | Blazor web dashboard (čita `iot/analytics` / REST) | ⏳ u toku |
 | 6 | Integracija, README opis mikroservisa, demo | ⬜ |

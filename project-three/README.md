@@ -9,20 +9,23 @@ podataka koristi:
 Ceo sistem je kontejnerizovan (Docker Compose) i koristi isti IoT dataset (Air Quality UCI) i
 model podataka kao Projekti 1 i 2.
 
-> **Status:** Faze 0–3 završene — Ingestion, Storage (+ re-publish na `iot/stored`), Analytics
-> (tumbling window), **MaaS** (klasifikacija) i **eKuiper** (CEP) su implementirani i dižu se kroz
-> Docker Compose. Predstoji: **Analytics++** (Faza 4 — konzum `iot/events` + pozivi MaaS-a) i
-> **Blazor web** (Faza 5). Detaljan plan: [PLAN.md](PLAN.md) · dnevnik implementacije i dijagram:
+> **Status:** Faze 0–4 završene — Ingestion, Storage (+ re-publish na `iot/stored`), **Analytics**
+> (window + eKuiper događaji + MaaS predikcije → `iot/analytics`), **MaaS** (klasifikacija) i
+> **eKuiper** (CEP) su implementirani i dižu se kroz Docker Compose. Predstoji: **Blazor web**
+> (Faza 5). Detaljan plan: [PLAN.md](PLAN.md) · dnevnik implementacije i dijagram:
 > [docs/IMPLEMENTACIJA.md](docs/IMPLEMENTACIJA.md).
 
 ## Arhitektura
 
 ```
 Ingestion ─iot/readings─► Storage (.NET) ─► PostgreSQL
-                             └─ re-publish ─► iot/stored ─┬─► eKuiper (CEP) ─► iot/events
-                                                          └─► Analytics (tumbling window)
+                             └─ re-publish ─► iot/stored ─┬─► eKuiper (CEP) ─► iot/events ─┐
+                                                          └─► Analytics ◄──────────────────┘
+                                                                 ├─ tumbling window (alarm)
+                                                                 ├─ MaaS REST /predict (klasa vazduha)
+                                                                 └─ publish ─► iot/analytics (rezime)
 
-MaaS (FastAPI + scikit-learn):  /predict  /model/info      (samostalan REST; Analytics ga zove u Fazi 4)
+MaaS (FastAPI + scikit-learn):  /predict  /model/info
 ```
 
 MQTT topici:
@@ -31,7 +34,8 @@ MQTT topici:
 |---|---|---|---|
 | `iot/readings` | Ingestion | Storage | sirova očitavanja `{deviceId, timestamp, readings{13 senzora}}` |
 | `iot/stored` | Storage | Analytics, eKuiper | perzistirano očitavanje + `storedAt` |
-| `iot/events` | eKuiper | (Analytics u Fazi 4) | CEP događaji `{type, severity, rule, ...}` |
+| `iot/events` | eKuiper | Analytics | CEP događaji `{type, severity, rule, ...}` |
+| `iot/analytics` | Analytics | (web dashboard, Faza 5) | objedinjeni rezime `ANALYTICS_SUMMARY` (prozor + ML klasa) |
 
 ## Mikroservisi
 
@@ -39,7 +43,7 @@ MQTT topici:
 |---|---|---|---|
 | Ingestion | Node.js | Simulira uređaje i publikuje očitavanja na `iot/readings` | ✅ |
 | Storage | .NET | Batch upis u PostgreSQL + re-publish na `iot/stored` | ✅ |
-| Analytics | Node.js | Tumbling window nad `iot/stored` (CEP+ML u Fazi 4) | ✅ window |
+| Analytics | Node.js | Window + eKuiper događaji + MaaS predikcije → `iot/analytics` | ✅ |
 | eKuiper | lfedge/ekuiper | CEP pravila nad `iot/stored` → događaji na `iot/events` | ✅ |
 | MaaS | Python / FastAPI | Klasifikacija kvaliteta vazduha (scikit-learn), REST `/predict` | ✅ |
 | Web | Blazor (.NET) | Live dashboard: očitavanja, događaji, ML klasa | ⏳ Faza 5 |
@@ -100,8 +104,12 @@ docker exec project-three-mosquitto mosquitto_sub -t iot/stored -C 2
 docker exec project-three-mosquitto mosquitto_sub -t iot/events -C 2
 curl -s localhost:9081/rules           # status registrovanih pravila
 
-# (d) Analytics tumbling window
+# (d) Analytics: window + eKuiper događaji + MaaS predikcije + objedinjeni alarmi
 curl -s localhost:3001/window/stats
+curl -s localhost:3001/events        # CEP događaji koje je Analytics primio sa iot/events
+curl -s localhost:3001/predictions   # MaaS predikcije po prozoru
+curl -s localhost:3001/alerts        # objedinjeni alarmi (prag + CEP + ML)
+docker exec project-three-mosquitto mosquitto_sub -t iot/analytics -C 1   # objedinjeni rezime po prozoru
 
 # (e) MaaS klasifikacija
 curl -s localhost:8000/model/info
@@ -117,7 +125,7 @@ curl -s -X POST localhost:8000/predict -H 'Content-Type: application/json' -d '{
 | Servis | URL | Rute |
 |---|---|---|
 | ingestion | http://localhost:3000 | `/health`, `/config`, `POST /simulate/start`, `POST /simulate/stop` |
-| analytics | http://localhost:3001 | `/health`, `/config`, `/window/stats` |
+| analytics | http://localhost:3001 | `/health`, `/config`, `/window/stats`, `/events`, `/predictions`, `/alerts` |
 | storage | http://localhost:8080 | `/`, `/health`, `/config` |
 | maas | http://localhost:8000 | `/health`, `/model/info`, `POST /predict`, `POST /predict/batch` |
 | eKuiper | http://localhost:9081 | `/streams`, `/rules` (REST API) |
