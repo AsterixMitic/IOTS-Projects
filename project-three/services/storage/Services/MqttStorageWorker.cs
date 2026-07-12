@@ -97,7 +97,7 @@ public sealed class MqttStorageWorker(
     private async Task ProcessBatchesAsync(CancellationToken cancellationToken)
     {
         var buffer = new List<QueuedReading>(options.BatchSize);
-        using var timer = new PeriodicTimer(options.FlushInterval);
+        var lastFlush = Stopwatch.GetTimestamp();
 
         while (await _channel.Reader.WaitToReadAsync(cancellationToken).ConfigureAwait(false))
         {
@@ -108,6 +108,7 @@ public sealed class MqttStorageWorker(
                 if (buffer.Count >= options.BatchSize)
                 {
                     await FlushAsync(buffer, cancellationToken).ConfigureAwait(false);
+                    lastFlush = Stopwatch.GetTimestamp();
                 }
             }
 
@@ -116,13 +117,24 @@ public sealed class MqttStorageWorker(
                 continue;
             }
 
-            var waitTask = _channel.Reader.WaitToReadAsync(cancellationToken).AsTask();
-            var tickTask = timer.WaitForNextTickAsync(cancellationToken).AsTask();
-
-            var completed = await Task.WhenAny(waitTask, tickTask).ConfigureAwait(false);
-            if (completed == tickTask)
+            var remaining = options.FlushInterval - Stopwatch.GetElapsedTime(lastFlush);
+            if (remaining <= TimeSpan.Zero)
             {
                 await FlushAsync(buffer, cancellationToken).ConfigureAwait(false);
+                lastFlush = Stopwatch.GetTimestamp();
+                continue;
+            }
+
+            // Task.Delay is safe to recreate every iteration, unlike PeriodicTimer.WaitForNextTickAsync
+            // (which throws if a previous call is abandoned mid-flight instead of awaited to completion).
+            var waitTask = _channel.Reader.WaitToReadAsync(cancellationToken).AsTask();
+            var delayTask = Task.Delay(remaining, cancellationToken);
+
+            var completed = await Task.WhenAny(waitTask, delayTask).ConfigureAwait(false);
+            if (completed == delayTask)
+            {
+                await FlushAsync(buffer, cancellationToken).ConfigureAwait(false);
+                lastFlush = Stopwatch.GetTimestamp();
             }
         }
 

@@ -9,12 +9,17 @@ podataka koristi:
 Ceo sistem je kontejnerizovan (Docker Compose) i koristi isti IoT dataset (Air Quality UCI) i
 model podataka kao Projekti 1 i 2.
 
-> **Status:** Faze 0–5 završene — ceo stack (Ingestion, Storage, Analytics, MaaS, eKuiper i
-> **Blazor web dashboard**) je implementiran i diže se kroz Docker Compose. Ostaje samo finalna
-> integracija/demo (Faza 6). Detaljan plan: [PLAN.md](PLAN.md) · dnevnik implementacije i dijagram:
-> [docs/IMPLEMENTACIJA.md](docs/IMPLEMENTACIJA.md).
+> **Status:** Faze 0–6 završene — ceo stack (Ingestion, Storage, Analytics, MaaS, eKuiper i
+> **Blazor web dashboard**) je implementiran, podignut kroz Docker Compose i **verifikovan
+> end-to-end** pod realnim saobraćajem (svih 9 servisa zajedno, kontinuirana simulacija >1 min).
+> Verifikacija je otkrila i ispravila dva runtime bug-a (Storage crash-loop i MaaS 404) — vidi
+> [PROBLEMS.md](PROBLEMS.md). Demo skripta i screenshotovi: [docs/DEMO.docx](docs/DEMO.docx).
+> Ostaje Faza 7 (polish, GitHub push). Detaljan plan: [PLAN.md](PLAN.md) · dnevnik implementacije:
+> [docs/IMPLEMENTACIJA.md](docs/IMPLEMENTACIJA.md) · pronađeni bugovi: [PROBLEMS.md](PROBLEMS.md).
 
 ## Arhitektura
+
+![Dijagram arhitekture Projekta 3](docs/images/architecture-diagram.png)
 
 ```
 Ingestion ─iot/readings─► Storage (.NET) ─► PostgreSQL

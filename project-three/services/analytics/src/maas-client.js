@@ -2,7 +2,7 @@
 
 // Klijent za MaaS REST servis (klasifikacija kvaliteta vazduha).
 // Robustan: timeout + graceful degradacija (vraća null umesto da baca).
-const MAAS_URL   = process.env.MAAS_URL || 'http://maas:8000';
+const MAAS_URL   = (process.env.MAAS_URL || 'http://maas:8000').replace(/\/+$/, '');
 const TIMEOUT_MS = Number(process.env.MAAS_TIMEOUT_MS || 3000);
 
 let lastStatus = { reachable: false, lastError: null, lastOkAt: null, calls: 0, failures: 0 };

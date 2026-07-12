@@ -3,7 +3,8 @@
 Prati šta je stvarno urađeno, po fazama. Plan (ciljna slika) je u [../PLAN.md](../PLAN.md);
 ovaj dokument beleži realizaciju i odluke donete usput. Ažurira se posle svake faze.
 
-**Status:** Faze 0–5 završene. Ostaje: Faza 6 (finalna integracija / demo).
+**Status:** Faze 0–6 završene (puna integracija kroz Docker Compose, verifikovana end-to-end).
+Ostaje: Faza 7 (polish + GitHub).
 
 ---
 
@@ -15,43 +16,10 @@ isključivo u MQTT modu (Mosquitto); Kafka kod je nasleđen ali se ne pokreće.
 
 ### Kompletno rešenje (dijagram)
 
-```mermaid
-flowchart LR
-    ING["Ingestion<br/>(Node.js)<br/>simulira uređaje"]
-    STOR["Storage<br/>(.NET)<br/>batch upis + re-publish"]
-    PG[("PostgreSQL")]
-    EK["eKuiper<br/>CEP pravila (SQL)"]
-    AN["Analytics<br/>(Node.js)<br/>tumbling window + orkestracija"]
-    MAAS["MaaS<br/>(FastAPI + scikit-learn)<br/>klasifikacija vazduha"]
-    WEB["Blazor Web<br/>live dashboard"]
+![Dijagram arhitekture Projekta 3](images/architecture-diagram.png)
 
-    T1(["iot/readings"])
-    T2(["iot/stored"])
-    T3(["iot/events"])
-    T4(["iot/analytics"])
-
-    ING -->|publish| T1
-    T1 -->|subscribe| STOR
-    STOR -->|upis| PG
-    STOR -->|re-publish| T2
-    T2 -->|subscribe| AN
-    T2 -->|subscribe| EK
-    EK -->|CEP događaji| T3
-    T3 -->|subscribe| AN
-    AN -->|"REST /predict"| MAAS
-    AN -->|publish| T4
-    AN -->|"REST / SSE"| WEB
-    T4 -.->|MQTT-WS| WEB
-
-    classDef done fill:#d4edda,stroke:#28a745,color:#155724;
-    classDef todo fill:#eef1f4,stroke:#adb5bd,color:#495057,stroke-dasharray:5 5;
-    classDef topic fill:#fff3cd,stroke:#ffc107,color:#856404;
-    class ING,STOR,PG,AN,MAAS,EK,WEB done;
-    class T1,T2,T3,T4 topic;
-```
-
-> Legenda: **pun zeleni okvir** = implementirano (Faze 0–2), **isprekidan sivi** = predstoji
-> (Faze 3–5), **žuti čvorovi** = MQTT topici.
+> Svi servisi (zeleno) i MQTT topici (žuto) sa dijagrama su implementirani i verifikovani
+> end-to-end u Fazi 6 (§9).
 
 Tok podataka (trenutno stanje, posle Faze 2):
 
@@ -294,11 +262,63 @@ tokom koji analizira.
 
 ---
 
-## 9. Naredni koraci
+## 9. Faza 6 — Finalna integracija (stvarni Docker runtime, end-to-end)
+
+Do ove faze je svaka prethodna faza bila verifikovana samo statički
+(`docker compose config`, `dotnet build`, `node --check`, lokalni smoke
+testovi bez kontejnera). U Fazi 6 je ceo stack prvi put stvarno podignut
+zajedno (`docker compose up -d --build`, svih 9 servisa) i propuštena je
+kontinuirana simulacija saobraćaja (10 uređaja, 1 poruka/s, `forceAlert=true`,
+>1 min) da se potvrdi da tok stvarno radi kraj-do-kraja, ne samo da se
+kontejneri podignu.
+
+### 9.1 Pronađeni i ispravljeni bugovi
+
+Prvo pokretanje je otkrilo dva realna problema koja statička provera nije
+mogla da uhvati — detaljno objašnjeni (simptom, uzrok, fix, verifikacija) u
+**[../PROBLEMS.md](../PROBLEMS.md)**:
+
+1. **Storage se rušio i nikad nije upisivao u bazu** — `PeriodicTimer` race
+   u `MqttStorageWorker.ProcessBatchesAsync` bacao je `InvalidOperationException`
+   čim bi poruke stizale brže od 1s (skoro uvek pod realnim saobraćajem), host
+   se gasio (`BackgroundServiceExceptionBehavior=StopHost`), Docker ga je tiho
+   restartovao — pa je `/health` izgledao zdravo dok `persistedMessages` nikad
+   nije rastao. Ispravljeno prelaskom na `Stopwatch` + `Task.Delay`.
+2. **Analytics → MaaS pozivi vraćali 404** — `.env` je imao trailing slash
+   (`MAAS_URL=http://maas:8000/`), što je pravilo dupli `//predict`. Ispravljeno
+   u `.env` + `maas-client.js` sada normalizuje URL bez obzira na env vrednost.
+
+### 9.2 Verifikacija po tačkama iz README §4
+
+| Provera | Rezultat |
+|---|---|
+| Storage upis + re-publish (`/health`) | `persistedMessages` = `receivedMessages`, `failedMessages: 0` (posle fix-a; pre fix-a zamrznuto) |
+| `iot/stored` sadrži `storedAt` | OK |
+| eKuiper pravila `Running` | sva 3 (`ruleHighTemp`, `ruleWindowHighTemp`, `rulePollutionSpike`) |
+| `iot/events` CEP događaji | OK — `HIGH_TEMP` / `WINDOW_HIGH_TEMP` / `POLLUTION_SPIKE` okidaju pod `forceAlert` |
+| Analytics `/events`, `/predictions`, `/alerts` | svi vraćaju sveže, objedinjene podatke |
+| MaaS `/predict`, `/model/info` | OK, klase `good`/`moderate`/`unhealthy` sa verovatnoćama (posle fix-a; pre fix-a 404) |
+| `iot/analytics` rezime po prozoru | OK (`ANALYTICS_SUMMARY`, sadrži `airQuality`, `tempAlert`) |
+| Blazor web (`:8090`) | konektuje se na MQTT, poziva MaaS `/model/info`, servira dashboard (`200 OK`) |
+
+Svi servisi ostaju živi i konzistentni pod kontinuiranim opterećenjem (nema
+restart petlji, nema grešaka u logovima) posle primenjenih fix-eva.
+
+### 9.3 Preostalo iz Faze 6 acceptance kriterijuma
+
+- [ ] Dijagram arhitekture (dijagram iz §1 je već tu; čeka se eventualna
+      dopuna/finalna verzija od kolege)
+- [ ] Demo skripta (korak-po-korak scenario za prezentaciju)
+- [ ] Screenshotovi Blazor dashboard-a tokom simulacije
+
+---
+
+## 10. Naredni koraci
 
 | Faza | Sadržaj | Status |
 |---|---|---|
 | 3 | eKuiper (CEP): stream nad `iot/stored`, pravila → `iot/events` | ✅ završeno |
 | 4 | Analytics++: konzum `iot/events` + poziv MaaS `/predict` + novi endpointi | ✅ završeno |
 | 5 | Blazor web dashboard (čita `iot/analytics` / REST) | ✅ završeno |
-| 6 | Finalna integracija, demo scenario, screenshotovi | ⏳ preostaje |
+| 6 | Finalna integracija (Docker runtime end-to-end, 2 bug-a nađena i ispravljena) | ✅ završeno (demo/screenshotovi preostaju) |
+| 7 | Polish + čišćenje + push na GitHub sa opisom mikroservisa | ⏳ preostaje |

@@ -1,0 +1,341 @@
+{
+  "info": {
+    "name": "Projekat 3 — IoT analitika (eKuiper + MaaS)",
+    "description": "Demo kolekcija za kompletan end-to-end tok: Ingestion -> Storage -> eKuiper (CEP) -> Analytics -> MaaS (ML) -> Blazor web. Redosled foldera prati tok podataka; unutar svakog foldera pozivi su numerisani u preporučenom redosledu izvršavanja za demonstraciju.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "ingestionUrl", "value": "http://localhost:3000" },
+    { "key": "storageUrl", "value": "http://localhost:8080" },
+    { "key": "analyticsUrl", "value": "http://localhost:3001" },
+    { "key": "maasUrl", "value": "http://localhost:8000" },
+    { "key": "ekuiperUrl", "value": "http://localhost:9081" }
+  ],
+  "item": [
+    {
+      "name": "0. Preduslovi (health check svih servisa)",
+      "item": [
+        {
+          "name": "Ingestion /health",
+          "request": {
+            "method": "GET",
+            "url": "{{ingestionUrl}}/health"
+          },
+          "response": []
+        },
+        {
+          "name": "Storage /health",
+          "request": {
+            "method": "GET",
+            "url": "{{storageUrl}}/health"
+          },
+          "response": []
+        },
+        {
+          "name": "Analytics /health",
+          "request": {
+            "method": "GET",
+            "url": "{{analyticsUrl}}/health"
+          },
+          "response": []
+        },
+        {
+          "name": "MaaS /health",
+          "request": {
+            "method": "GET",
+            "url": "{{maasUrl}}/health"
+          },
+          "response": []
+        },
+        {
+          "name": "eKuiper /rules (status CEP pravila)",
+          "request": {
+            "method": "GET",
+            "url": "{{ekuiperUrl}}/rules"
+          },
+          "response": []
+        }
+      ],
+      "description": "Pokrenuti pre demo-a da se potvrdi da je docker compose up -d --build podigao svih 8 dugotrajnih servisa."
+    },
+    {
+      "name": "1. Ingestion — simulacija uređaja",
+      "item": [
+        {
+          "name": "1a. Start simulacije — forsiran alarm (Scenario A)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{ingestionUrl}}/simulate/start",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceCount\": 10,\n  \"intervalMs\": 1000,\n  \"forceAlert\": true\n}"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "// Scenario A: temperatura 51-60°C, garantovano okida HIGH_TEMP i WINDOW_HIGH_TEMP u eKuiper-u."
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "1b. Start simulacije — normalan saobraćaj (Scenario B)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{ingestionUrl}}/simulate/start",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceCount\": 8,\n  \"intervalMs\": 800,\n  \"forceAlert\": false\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "1c. Stop simulacije",
+          "request": {
+            "method": "POST",
+            "url": "{{ingestionUrl}}/simulate/stop"
+          },
+          "response": []
+        },
+        {
+          "name": "1d. Ingestion /health (broj poslatih poruka)",
+          "request": {
+            "method": "GET",
+            "url": "{{ingestionUrl}}/health"
+          },
+          "response": []
+        },
+        {
+          "name": "1e. Ingestion /config",
+          "request": {
+            "method": "GET",
+            "url": "{{ingestionUrl}}/config"
+          },
+          "response": []
+        }
+      ],
+      "description": "Simulator generiše sintetičke IoT uređaje i publikuje očitavanja na MQTT topic iot/readings. forceAlert=true garantuje da temperatura pređe pragove CEP pravila (za ponovljiv demo); forceAlert=false daje realniji opseg vrednosti."
+    },
+    {
+      "name": "2. Storage — upis u Postgres + re-publish",
+      "item": [
+        {
+          "name": "2a. Storage /health (metrike: received/persisted/republished)",
+          "request": {
+            "method": "GET",
+            "url": "{{storageUrl}}/health"
+          },
+          "response": []
+        },
+        {
+          "name": "2b. Storage / (osnovne informacije o servisu)",
+          "request": {
+            "method": "GET",
+            "url": "{{storageUrl}}/"
+          },
+          "response": []
+        },
+        {
+          "name": "2c. Storage /config",
+          "request": {
+            "method": "GET",
+            "url": "{{storageUrl}}/config"
+          },
+          "response": []
+        }
+      ],
+      "description": "Storage se pretplaćuje na iot/readings, upisuje batch (podrazumevano 500 poruka ili 1s, šta pre nastupi) u PostgreSQL, i posle uspešnog upisa re-publikuje svako očitavanje na iot/stored (+ storedAt timestamp). Očekivano: persistedMessages i republishedMessages rastu 1:1 sa receivedMessages, failedMessages ostaje 0."
+    },
+    {
+      "name": "3. eKuiper — CEP pravila i događaji",
+      "item": [
+        {
+          "name": "3a. Lista streamova",
+          "request": {
+            "method": "GET",
+            "url": "{{ekuiperUrl}}/streams"
+          },
+          "response": []
+        },
+        {
+          "name": "3b. Detalji stream-a iotStream",
+          "request": {
+            "method": "GET",
+            "url": "{{ekuiperUrl}}/streams/iotStream"
+          },
+          "response": []
+        },
+        {
+          "name": "3c. Lista pravila (status Running)",
+          "request": {
+            "method": "GET",
+            "url": "{{ekuiperUrl}}/rules"
+          },
+          "response": []
+        },
+        {
+          "name": "3d. Status pravila ruleHighTemp",
+          "request": {
+            "method": "GET",
+            "url": "{{ekuiperUrl}}/rules/ruleHighTemp/status"
+          },
+          "response": []
+        },
+        {
+          "name": "3e. Status pravila ruleWindowHighTemp",
+          "request": {
+            "method": "GET",
+            "url": "{{ekuiperUrl}}/rules/ruleWindowHighTemp/status"
+          },
+          "response": []
+        },
+        {
+          "name": "3f. Status pravila rulePollutionSpike",
+          "request": {
+            "method": "GET",
+            "url": "{{ekuiperUrl}}/rules/rulePollutionSpike/status"
+          },
+          "response": []
+        }
+      ],
+      "description": "eKuiper je pretplaćen na iot/stored, primenjuje 3 SQL CEP pravila (HIGH_TEMP - trenutni prag; WINDOW_HIGH_TEMP - agregacija nad 10s tumbling window-om; POLLUTION_SPIKE - kompozitni uslov NOx+NO2) i emituje događaje na iot/events. REST API na 9081 služi za proveru statusa; sami CEP događaji se prate preko MQTT (iot/events), ne preko REST-a — vidi napomenu ispod."
+    },
+    {
+      "name": "4. Analytics — objedinjena analiza (window + CEP + ML)",
+      "item": [
+        {
+          "name": "4a. /health (broj događaja/predikcija, status MaaS)",
+          "request": {
+            "method": "GET",
+            "url": "{{analyticsUrl}}/health"
+          },
+          "response": []
+        },
+        {
+          "name": "4b. /window/stats (tumbling window)",
+          "request": {
+            "method": "GET",
+            "url": "{{analyticsUrl}}/window/stats"
+          },
+          "response": []
+        },
+        {
+          "name": "4c. /events (poslednji eKuiper CEP događaji)",
+          "request": {
+            "method": "GET",
+            "url": "{{analyticsUrl}}/events"
+          },
+          "response": []
+        },
+        {
+          "name": "4d. /predictions (poslednje MaaS predikcije po prozoru)",
+          "request": {
+            "method": "GET",
+            "url": "{{analyticsUrl}}/predictions"
+          },
+          "response": []
+        },
+        {
+          "name": "4e. /alerts (objedinjeni alarmi: prag + CEP + ML)",
+          "request": {
+            "method": "GET",
+            "url": "{{analyticsUrl}}/alerts"
+          },
+          "response": []
+        },
+        {
+          "name": "4f. /config",
+          "request": {
+            "method": "GET",
+            "url": "{{analyticsUrl}}/config"
+          },
+          "response": []
+        }
+      ],
+      "description": "Analytics je pretplaćen na iot/stored (očitavanja) i iot/events (eKuiper CEP), računa tumbling window (10s), po zatvaranju prozora zove MaaS REST /predict sa prosečnim očitavanjem, i objedinjuje sve u iot/analytics rezime + REST endpointe. Očekivano posle par sekundi simulacije: /predictions.maas.reachable = true, /alerts.count raste."
+    },
+    {
+      "name": "5. MaaS — klasifikacija kvaliteta vazduha (ML)",
+      "item": [
+        {
+          "name": "5a. /health",
+          "request": {
+            "method": "GET",
+            "url": "{{maasUrl}}/health"
+          },
+          "response": []
+        },
+        {
+          "name": "5b. /model/info (tip modela, tačnost, klase)",
+          "request": {
+            "method": "GET",
+            "url": "{{maasUrl}}/model/info"
+          },
+          "response": []
+        },
+        {
+          "name": "5c. POST /predict — visoki senzorski odzivi (očekivano: unhealthy)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{maasUrl}}/predict",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"readings\": {\n    \"pt08_s1_co\": 1600,\n    \"pt08_s2_nmhc\": 1300,\n    \"pt08_s3_nox\": 400,\n    \"pt08_s4_no2\": 2200,\n    \"pt08_s5_o3\": 1900,\n    \"temperature\": 38,\n    \"relative_humidity\": 65,\n    \"absolute_humidity\": 2.5\n  }\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "5d. POST /predict — niski senzorski odzivi (očekivano: good)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{maasUrl}}/predict",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"readings\": {\n    \"pt08_s1_co\": 1050,\n    \"pt08_s2_nmhc\": 900,\n    \"pt08_s3_nox\": 800,\n    \"pt08_s4_no2\": 1500,\n    \"pt08_s5_o3\": 1100,\n    \"temperature\": 21.5,\n    \"relative_humidity\": 48.2,\n    \"absolute_humidity\": 1.1\n  }\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "5e. POST /predict/batch — više očitavanja odjednom",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{maasUrl}}/predict/batch",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    { \"pt08_s1_co\": 1050, \"pt08_s2_nmhc\": 900, \"pt08_s3_nox\": 800, \"pt08_s4_no2\": 1500, \"pt08_s5_o3\": 1100, \"temperature\": 21.5, \"relative_humidity\": 48.2, \"absolute_humidity\": 1.1 },\n    { \"pt08_s1_co\": 1600, \"pt08_s2_nmhc\": 1300, \"pt08_s3_nox\": 400, \"pt08_s4_no2\": 2200, \"pt08_s5_o3\": 1900, \"temperature\": 38, \"relative_humidity\": 65, \"absolute_humidity\": 2.5 }\n  ]\n}"
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "MaaS = Python + FastAPI + scikit-learn (RandomForestClassifier), klasifikuje kvalitet vazduha (good/moderate/unhealthy) na osnovu 8 senzorskih odziva. Model je komitovan (model.joblib) — nema treninga pri startu kontejnera. Odgovor sadrži klasu, verovatnoće po klasi i model_version."
+    },
+    {
+      "name": "6. Web dashboard (Blazor)",
+      "item": [
+        {
+          "name": "6a. GET / (dashboard — otvoriti u browseru za live prikaz)",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8090/"
+          },
+          "response": []
+        }
+      ],
+      "description": "Blazor Server dashboard na http://localhost:8090. Nije REST API za konzumaciju — ovaj zahtev samo potvrđuje da server odgovara (200 OK); za live prikaz (MQTT + SignalR) treba otvoriti URL u browseru dok simulacija radi."
+    }
+  ]
+}
