@@ -9,10 +9,9 @@ podataka koristi:
 Ceo sistem je kontejnerizovan (Docker Compose) i koristi isti IoT dataset (Air Quality UCI) i
 model podataka kao Projekti 1 i 2.
 
-> **Status:** Faze 0–4 završene — Ingestion, Storage (+ re-publish na `iot/stored`), **Analytics**
-> (window + eKuiper događaji + MaaS predikcije → `iot/analytics`), **MaaS** (klasifikacija) i
-> **eKuiper** (CEP) su implementirani i dižu se kroz Docker Compose. Predstoji: **Blazor web**
-> (Faza 5). Detaljan plan: [PLAN.md](PLAN.md) · dnevnik implementacije i dijagram:
+> **Status:** Faze 0–5 završene — ceo stack (Ingestion, Storage, Analytics, MaaS, eKuiper i
+> **Blazor web dashboard**) je implementiran i diže se kroz Docker Compose. Ostaje samo finalna
+> integracija/demo (Faza 6). Detaljan plan: [PLAN.md](PLAN.md) · dnevnik implementacije i dijagram:
 > [docs/IMPLEMENTACIJA.md](docs/IMPLEMENTACIJA.md).
 
 ## Arhitektura
@@ -23,7 +22,7 @@ Ingestion ─iot/readings─► Storage (.NET) ─► PostgreSQL
                                                           └─► Analytics ◄──────────────────┘
                                                                  ├─ tumbling window (alarm)
                                                                  ├─ MaaS REST /predict (klasa vazduha)
-                                                                 └─ publish ─► iot/analytics (rezime)
+                                                                 └─ publish ─► iot/analytics ─► Blazor web dashboard
 
 MaaS (FastAPI + scikit-learn):  /predict  /model/info
 ```
@@ -46,7 +45,7 @@ MQTT topici:
 | Analytics | Node.js | Window + eKuiper događaji + MaaS predikcije → `iot/analytics` | ✅ |
 | eKuiper | lfedge/ekuiper | CEP pravila nad `iot/stored` → događaji na `iot/events` | ✅ |
 | MaaS | Python / FastAPI | Klasifikacija kvaliteta vazduha (scikit-learn), REST `/predict` | ✅ |
-| Web | Blazor (.NET) | Live dashboard: očitavanja, događaji, ML klasa | ⏳ Faza 5 |
+| Web | Blazor (.NET) | Live dashboard (MQTT + SignalR): očitavanja, CEP, ML klasa, alarmi | ✅ |
 
 ---
 
@@ -65,13 +64,15 @@ cp .env.example .env             # lokalna konfiguracija (.env nije u gitu)
 docker compose up -d --build
 ```
 
-Diže se 8 kontejnera: `postgres`, `mosquitto`, `ingestion`, `storage`, `analytics`, `ekuiper`,
-`ekuiper-init` (jednokratni provisioning eKuiper pravila, izađe posle registracije) i `maas`.
+Diže se stack servisa: `postgres`, `mosquitto`, `ingestion`, `storage`, `analytics`, `ekuiper`,
+`ekuiper-init` (jednokratni provisioning eKuiper pravila, izađe posle registracije), `maas` i
+`web`.
 
 - **Postgres** se pri prvom podizanju automatski inicijalizuje šemom + seed-om
   (`db/0001_schema_and_staging.up.sql` je mount-ovan u `initdb.d`).
 - **eKuiper** dobija stream `iotStream` i 3 pravila automatski (init kontejner).
 - **MaaS** učitava komitovani model (`services/maas/model/model.joblib`) — nema treninga pri podizanju.
+- **Web dashboard** je dostupan na <http://localhost:8090> (Blazor Server + live MQTT).
 
 Za učitavanje istorijskog dataseta u bazu (opciono, nije potrebno za live tok):
 
@@ -129,6 +130,7 @@ curl -s -X POST localhost:8000/predict -H 'Content-Type: application/json' -d '{
 | storage | http://localhost:8080 | `/`, `/health`, `/config` |
 | maas | http://localhost:8000 | `/health`, `/model/info`, `POST /predict`, `POST /predict/batch` |
 | eKuiper | http://localhost:9081 | `/streams`, `/rules` (REST API) |
+| **web** | **http://localhost:8090** | **Blazor dashboard (otvoriti u browseru)** |
 | mosquitto | tcp://localhost:1883, ws://localhost:9001 | MQTT / MQTT-over-WebSockets |
 
 ---

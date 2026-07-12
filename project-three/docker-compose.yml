@@ -156,6 +156,29 @@ services:
       start_period: 20s
     restart: unless-stopped
 
+  # Web dashboard (Blazor Server) — live prikaz analitike (Faza 5).
+  # Server-side MQTT pretplata + SignalR push. Otvoriti http://localhost:8090
+  web:
+    build:
+      context: ./services/web
+    container_name: project-three-web
+    env_file:
+      - .env
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      MQTT_HOST: mosquitto
+      MQTT_PORT: "1883"
+      MQTT_STORED_TOPIC: ${MQTT_STORED_TOPIC:-iot/stored}
+      MQTT_EVENTS_TOPIC: ${MQTT_EVENTS_TOPIC:-iot/events}
+      MQTT_ANALYTICS_TOPIC: ${MQTT_ANALYTICS_TOPIC:-iot/analytics}
+      MAAS_URL: ${MAAS_URL:-http://maas:8000}
+    ports:
+      - "8090:8080"
+    depends_on:
+      mosquitto:
+        condition: service_healthy
+    restart: unless-stopped
+
 volumes:
   postgres_data:
   mosquitto_data:

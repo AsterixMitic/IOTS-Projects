@@ -1,0 +1,98 @@
+:root {
+    --bg: #0f172a;
+    --panel: #1e293b;
+    --panel-2: #273449;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --border: #334155;
+    --good: #22c55e;
+    --moderate: #f59e0b;
+    --unhealthy: #ef4444;
+    --accent: #38bdf8;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+main { padding: 1.25rem 1.5rem 3rem; max-width: 1200px; margin: 0 auto; }
+
+.topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: .75rem; margin-bottom: 1rem;
+}
+.topbar h1 { font-size: 1.4rem; margin: 0; }
+.status { color: var(--muted); font-size: .9rem; display: flex; align-items: center; gap: .5rem; }
+.status .sep { opacity: .5; }
+.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.dot.on { background: var(--good); box-shadow: 0 0 8px var(--good); }
+.dot.off { background: var(--unhealthy); box-shadow: 0 0 8px var(--unhealthy); }
+
+.banner {
+    background: rgba(239, 68, 68, .15); border: 1px solid var(--unhealthy);
+    color: #fecaca; padding: .6rem .9rem; border-radius: 10px; margin-bottom: 1rem;
+    display: flex; gap: .5rem; flex-wrap: wrap; align-items: center;
+}
+.banner span { background: rgba(239,68,68,.25); padding: .1rem .5rem; border-radius: 6px; font-size: .85rem; }
+
+.grid {
+    display: grid; gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+.card {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 14px; padding: 1rem 1.1rem;
+}
+.card.wide { grid-column: 1 / -1; }
+.card-title {
+    font-size: .8rem; text-transform: uppercase; letter-spacing: .04em;
+    color: var(--muted); margin-bottom: .75rem; display: flex; gap: .4rem; flex-wrap: wrap; align-items: center;
+}
+
+/* Air quality */
+.aq { border-top: 4px solid var(--border); }
+.aq.good { border-top-color: var(--good); }
+.aq.moderate { border-top-color: var(--moderate); }
+.aq.unhealthy { border-top-color: var(--unhealthy); }
+.aq-badge { font-size: 2rem; font-weight: 700; margin-bottom: .75rem; }
+.aq.good .aq-badge { color: var(--good); }
+.aq.moderate .aq-badge { color: var(--moderate); }
+.aq.unhealthy .aq-badge { color: var(--unhealthy); }
+.aq-badge.muted { color: var(--muted); font-size: 1.1rem; font-weight: 500; }
+
+.probs { display: flex; flex-direction: column; gap: .4rem; }
+.prob-row { display: grid; grid-template-columns: 70px 1fr 40px; align-items: center; gap: .5rem; font-size: .85rem; }
+.prob-bar { background: var(--panel-2); border-radius: 6px; height: 10px; overflow: hidden; }
+.prob-fill { height: 100%; border-radius: 6px; }
+.prob-fill.good { background: var(--good); }
+.prob-fill.moderate { background: var(--moderate); }
+.prob-fill.unhealthy { background: var(--unhealthy); }
+.prob-val { text-align: right; color: var(--muted); }
+
+/* Stats */
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+.stats > div { display: flex; flex-direction: column; }
+.stats span { color: var(--muted); font-size: .75rem; }
+.stats strong { font-size: 1.15rem; }
+
+/* Sparkline */
+.spark { width: 100%; height: 60px; color: var(--accent); }
+.spark-legend { display: flex; justify-content: space-between; color: var(--muted); font-size: .75rem; margin-top: .25rem; }
+
+/* Feed tables */
+table.feed { width: 100%; border-collapse: collapse; font-size: .85rem; }
+table.feed th { text-align: left; color: var(--muted); font-weight: 500; padding: .35rem .5rem; border-bottom: 1px solid var(--border); }
+table.feed td { padding: .35rem .5rem; border-bottom: 1px solid var(--panel-2); }
+table.feed tr:last-child td { border-bottom: none; }
+
+.tag { padding: .1rem .45rem; border-radius: 6px; font-size: .75rem; font-weight: 600; }
+.tag.warn { background: rgba(245,158,11,.2); color: var(--moderate); }
+.tag.crit { background: rgba(239,68,68,.2); color: var(--unhealthy); }
+.pill { background: var(--panel-2); color: var(--text); padding: .1rem .5rem; border-radius: 999px; font-size: .7rem; text-transform: none; letter-spacing: 0; }
+
+.muted { color: var(--muted); font-size: .9rem; }

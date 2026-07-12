@@ -3,7 +3,7 @@
 Prati šta je stvarno urađeno, po fazama. Plan (ciljna slika) je u [../PLAN.md](../PLAN.md);
 ovaj dokument beleži realizaciju i odluke donete usput. Ažurira se posle svake faze.
 
-**Status:** Faze 0–4 završene. U toku: Faza 5 (Blazor web).
+**Status:** Faze 0–5 završene. Ostaje: Faza 6 (finalna integracija / demo).
 
 ---
 
@@ -46,8 +46,7 @@ flowchart LR
     classDef done fill:#d4edda,stroke:#28a745,color:#155724;
     classDef todo fill:#eef1f4,stroke:#adb5bd,color:#495057,stroke-dasharray:5 5;
     classDef topic fill:#fff3cd,stroke:#ffc107,color:#856404;
-    class ING,STOR,PG,AN,MAAS,EK done;
-    class WEB todo;
+    class ING,STOR,PG,AN,MAAS,EK,WEB done;
     class T1,T2,T3,T4 topic;
 ```
 
@@ -232,7 +231,36 @@ broj događaja/predikcija i status MaaS-a.
 
 ---
 
-## 7. Da li bi trenirani model bio validan za neki drugi dataset?
+## 7. Faza 5 — Blazor web dashboard
+
+Live dashboard (**Blazor Server**) koji objedinjeno prikazuje tok. Server-side MQTT pretplata
+(MQTTnet) + push u UI preko SignalR-a — bez CDN-a i bez CORS-a, jedan kontejner.
+
+### 7.1 Arhitektura
+
+- `MqttBackgroundService` (hosted service): pretplata na `iot/analytics`, `iot/events`, `iot/stored`;
+  puni `DashboardState`. Očitavanja (visoka učestalost) throttle-ovana na osvežavanje UI ~1×/s.
+- `DashboardState` (singleton): deljeno stanje + `OnChange`; snapshot metode pod lock-om (bezbedno
+  čitanje iz komponenti dok MQTT nit piše).
+- `Dashboard.razor` (`@rendermode InteractiveServer`): pretplata na `OnChange`, `InvokeAsync(StateHasChanged)`.
+- MaaS `GET /model/info` preko `HttpClient` (retry dok se MaaS ne podigne).
+
+### 7.2 Prikaz
+
+Kvalitet vazduha (ML klasa + verovatnoće, obojeno), tumbling window (prosek/min/max/latencija),
+trend temperature (SVG sparkline), info o ML modelu, eKuiper CEP feed + brojači, live očitavanja,
+baner alarma (prag / `unhealthy` / kritični CEP).
+
+### 7.3 Verifikacija (stvarno pokrenuto lokalno)
+
+- `dotnet build -c Release` → **0/0**.
+- **Runtime smoke test** (bez Docker-a): app se diže (HTTP 200), server-side renderuje sve kartice,
+  učitava `blazor.web.js` + `app.css`, i **ne pada** iako su MQTT/MaaS nedostupni (graceful degradacija
+  + retry). `docker compose config` validan sa `web` servisom (port 8090→8080).
+
+---
+
+## 8. Da li bi trenirani model bio validan za neki drugi dataset?
 
 Kratko: **artefakt (istrenirani model) je specifičan za ovaj dataset i ne bi se dobro preneo na
 proizvoljan drugi dataset — ali metodologija i kod (`train.py`) jesu ponovo upotrebljivi uz
@@ -266,11 +294,11 @@ tokom koji analizira.
 
 ---
 
-## 8. Naredni koraci
+## 9. Naredni koraci
 
 | Faza | Sadržaj | Status |
 |---|---|---|
 | 3 | eKuiper (CEP): stream nad `iot/stored`, pravila → `iot/events` | ✅ završeno |
 | 4 | Analytics++: konzum `iot/events` + poziv MaaS `/predict` + novi endpointi | ✅ završeno |
-| 5 | Blazor web dashboard (čita `iot/analytics` / REST) | ⏳ u toku |
-| 6 | Integracija, README opis mikroservisa, demo | ⬜ |
+| 5 | Blazor web dashboard (čita `iot/analytics` / REST) | ✅ završeno |
+| 6 | Finalna integracija, demo scenario, screenshotovi | ⏳ preostaje |

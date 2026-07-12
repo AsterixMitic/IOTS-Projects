@@ -1,0 +1,262 @@
+@page "/"
+@rendermode InteractiveServer
+@implements IDisposable
+@inject DashboardState State
+@inject IHttpClientFactory HttpFactory
+@inject IConfiguration Config
+
+<PageTitle>IoT Dashboard — Projekat 3</PageTitle>
+
+<div class="topbar">
+    <h1>IoT Analitika — Projekat 3</h1>
+    <div class="status">
+        <span class="dot @(State.MqttConnected ? "on" : "off")"></span>
+        MQTT @(State.MqttConnected ? "povezan" : "nije povezan")
+        <span class="sep">•</span>
+        očitavanja: <strong>@State.TotalReadings</strong>
+    </div>
+</div>
+
+@{
+    var summary = State.LatestSummary;
+    var summaries = State.SnapshotSummaries();
+    var events = State.SnapshotEvents();
+    var readings = State.SnapshotReadings();
+    var counts = State.SnapshotEventCounts();
+    var aq = summary?.AirQuality;
+}
+
+@if (summary is { TempAlert: true } || aq == "unhealthy" || events.Any(e => e.Severity == "critical"))
+{
+    <div class="banner">
+        ⚠ Aktivni alarmi:
+        @if (summary?.TempAlert == true) { <span>visoka temperatura (avg @summary.AvgTemp°C)</span> }
+        @if (aq == "unhealthy") { <span>ML klasa: nezdrav vazduh</span> }
+        @if (events.Any(e => e.Severity == "critical")) { <span>CEP: kritični događaj</span> }
+    </div>
+}
+
+<div class="grid">
+    <!-- Kvalitet vazduha (MaaS) -->
+    <div class="card aq @AqClass(aq)">
+        <div class="card-title">Kvalitet vazduha (MaaS)</div>
+        @if (aq is null)
+        {
+            <div class="aq-badge muted">čeka podatke…</div>
+        }
+        else
+        {
+            <div class="aq-badge">@AqLabel(aq)</div>
+            @if (summary?.AirQualityProb is { } probs)
+            {
+                <div class="probs">
+                    @foreach (var cls in new[] { "good", "moderate", "unhealthy" })
+                    {
+                        var val = probs.TryGetValue(cls, out var v) ? v : 0;
+                        <div class="prob-row">
+                            <span class="prob-label">@AqLabel(cls)</span>
+                            <div class="prob-bar"><div class="prob-fill @AqClass(cls)" style="width:@((val * 100).ToString("0"))%"></div></div>
+                            <span class="prob-val">@((val * 100).ToString("0"))%</span>
+                        </div>
+                    }
+                </div>
+            }
+        }
+    </div>
+
+    <!-- Tumbling window -->
+    <div class="card">
+        <div class="card-title">Tumbling window (@summary?.Window ?? 0)</div>
+        <div class="stats">
+            <div><span>Prosek temp</span><strong>@(summary?.AvgTemp?.ToString("0.0") ?? "—")°C</strong></div>
+            <div><span>Uzoraka</span><strong>@(summary?.Count ?? 0)</strong></div>
+            <div><span>Min / Max</span><strong>@(summary?.Min?.ToString("0.0") ?? "—") / @(summary?.Max?.ToString("0.0") ?? "—")</strong></div>
+            <div><span>Latencija</span><strong>@(summary?.AvgLatencyMs?.ToString("0") ?? "—") ms</strong></div>
+        </div>
+    </div>
+
+    <!-- Trend prosečne temperature -->
+    <div class="card">
+        <div class="card-title">Trend prosečne temperature</div>
+        @{
+            var temps = summaries.Reverse().Where(s => s.AvgTemp.HasValue).Select(s => s.AvgTemp!.Value).ToList();
+        }
+        @if (temps.Count >= 2)
+        {
+            var min = temps.Min();
+            var max = temps.Max();
+            var range = Math.Abs(max - min) < 0.01 ? 1 : max - min;
+            var pts = string.Join(" ", temps.Select((t, i) =>
+            {
+                var x = temps.Count == 1 ? 0 : (double)i / (temps.Count - 1) * 300;
+                var y = 55 - (t - min) / range * 45;
+                return $"{x.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)},{y.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)}";
+            }));
+            <svg class="spark" viewBox="0 0 300 60" preserveAspectRatio="none">
+                <polyline points="@pts" fill="none" stroke="currentColor" stroke-width="2" />
+            </svg>
+            <div class="spark-legend"><span>min @min.ToString("0.0")°C</span><span>max @max.ToString("0.0")°C</span></div>
+        }
+        else
+        {
+            <div class="muted">nedovoljno podataka…</div>
+        }
+    </div>
+
+    <!-- Model info (MaaS) -->
+    <div class="card">
+        <div class="card-title">ML model (MaaS)</div>
+        @if (_modelInfo is null)
+        {
+            <div class="muted">učitavanje info o modelu…</div>
+        }
+        else
+        {
+            <div class="stats">
+                <div><span>Tip</span><strong>@_modelInfo.ModelType</strong></div>
+                <div><span>Verzija</span><strong>@_modelInfo.ModelVersion</strong></div>
+                <div><span>Test tačnost</span><strong>@((_modelInfo.Metrics?.TestAccuracy ?? 0).ToString("P1"))</strong></div>
+                <div><span>Biblioteka</span><strong>@_modelInfo.Library</strong></div>
+            </div>
+        }
+    </div>
+
+    <!-- CEP događaji (eKuiper) -->
+    <div class="card wide">
+        <div class="card-title">
+            eKuiper CEP događaji
+            @foreach (var kv in counts.OrderBy(k => k.Key))
+            {
+                <span class="pill">@kv.Key: @kv.Value</span>
+            }
+        </div>
+        @if (events.Count == 0)
+        {
+            <div class="muted">nema događaja (pokreni simulaciju sa forceAlert)…</div>
+        }
+        else
+        {
+            <table class="feed">
+                <thead><tr><th>Vreme</th><th>Tip</th><th>Uređaj</th><th>Vrednost</th><th>Ozbiljnost</th></tr></thead>
+                <tbody>
+                    @foreach (var e in events.Take(10))
+                    {
+                        <tr>
+                            <td>@FormatTs(e.Ts)</td>
+                            <td><span class="tag @(e.Severity == "critical" ? "crit" : "warn")">@e.Type</span></td>
+                            <td>@(e.DeviceId ?? "—")</td>
+                            <td>@EventValue(e)</td>
+                            <td>@e.Severity</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+
+    <!-- Live očitavanja (iot/stored) -->
+    <div class="card wide">
+        <div class="card-title">Live očitavanja (iot/stored)</div>
+        @if (readings.Count == 0)
+        {
+            <div class="muted">nema očitavanja…</div>
+        }
+        else
+        {
+            <table class="feed">
+                <thead><tr><th>Vreme</th><th>Uređaj</th><th>Temp</th><th>NOx</th><th>NO2</th></tr></thead>
+                <tbody>
+                    @foreach (var r in readings.Take(10))
+                    {
+                        <tr>
+                            <td>@FormatTs(r.Timestamp)</td>
+                            <td>@(r.DeviceId ?? "—")</td>
+                            <td>@(r.Temperature?.ToString("0.0") ?? "—")°C</td>
+                            <td>@ReadingVal(r, "nox_gt")</td>
+                            <td>@ReadingVal(r, "no2_gt")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+@code {
+    private ModelInfo? _modelInfo;
+    private bool _disposed;
+
+    private static readonly System.Text.Json.JsonSerializerOptions SnakeJson = new()
+    {
+        PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.SnakeCaseLower,
+        PropertyNameCaseInsensitive = true,
+    };
+
+    protected override void OnInitialized()
+    {
+        State.OnChange += HandleChange;
+        _ = LoadModelInfoAsync();
+    }
+
+    private async Task LoadModelInfoAsync()
+    {
+        var url = (Config["MAAS_URL"] ?? "http://maas:8000").TrimEnd('/') + "/model/info";
+        var http = HttpFactory.CreateClient();
+        http.Timeout = TimeSpan.FromSeconds(4);
+
+        for (var attempt = 0; attempt < 10 && !_disposed && _modelInfo is null; attempt++)
+        {
+            try
+            {
+                var json = await http.GetStringAsync(url);
+                _modelInfo = System.Text.Json.JsonSerializer.Deserialize<ModelInfo>(json, SnakeJson);
+                if (_modelInfo is not null) { await InvokeAsync(StateHasChanged); return; }
+            }
+            catch
+            {
+                await Task.Delay(3000);
+            }
+        }
+    }
+
+    private async void HandleChange()
+    {
+        if (_disposed) return;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private static string AqClass(string? aq) => aq switch
+    {
+        "good" => "good",
+        "moderate" => "moderate",
+        "unhealthy" => "unhealthy",
+        _ => "muted",
+    };
+
+    private static string AqLabel(string? aq) => aq switch
+    {
+        "good" => "Dobar",
+        "moderate" => "Umeren",
+        "unhealthy" => "Nezdrav",
+        _ => "—",
+    };
+
+    private static string FormatTs(long ms) =>
+        ms > 0 ? DateTimeOffset.FromUnixTimeMilliseconds(ms).LocalDateTime.ToString("HH:mm:ss") : "—";
+
+    private static string EventValue(CepEvent e)
+    {
+        if (e.Value.HasValue) return e.Value.Value.ToString("0.0");
+        if (e.Nox.HasValue || e.No2.HasValue) return $"NOx {e.Nox?.ToString("0") ?? "—"} / NO2 {e.No2?.ToString("0") ?? "—"}";
+        return "—";
+    }
+
+    private static string ReadingVal(ReadingMessage r, string key) =>
+        r.Readings != null && r.Readings.TryGetValue(key, out var v) ? v.ToString("0") : "—";
+
+    public void Dispose()
+    {
+        _disposed = true;
+        State.OnChange -= HandleChange;
+    }
+}
