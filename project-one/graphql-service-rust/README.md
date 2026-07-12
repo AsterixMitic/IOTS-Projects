@@ -1,129 +1,121 @@
 # GraphQL Service (Rust)
 
-High-performance GraphQL API implementation for IoT sensor data using Rust, async-graphql, and Actix-web.
+GraphQL API for the shared IoT Air Quality database, built with
+[`async-graphql`](https://async-graphql.github.io/) on top of Actix-web, talking
+to PostgreSQL through `sqlx`.
+
+Unlike the REST and gRPC services, this service lets the **client choose exactly
+which fields it wants**. A query for `{ id }` returns only `id` — the resolvers
+for the other fields never run. This is the over-fetch avoidance the project sets
+out to demonstrate (assignment requirement: *"omogućiti klijentu selektovanje
+specifičnih polja"*).
 
 ## Architecture
 
-The service follows a clean, layered architecture:
-
 ```
-HTTP Request (Actix-web)
-    ↓
-GraphQL Query (async-graphql)
-    ↓
-Query/Mutation Resolvers (schema.rs)
-    ↓
-Database Layer (db.rs, using sqlx)
-    ↓
+HTTP POST /graphql  (Actix-web)
+      │
+      ▼
+async-graphql engine  ── parses query + variables, validates against schema
+      │
+      ▼
+Query / Mutation resolvers  (src/schema.rs)   ── one resolver method per field
+      │
+      ▼
+DbPool  (src/db.rs, sqlx)  ── SQL over the normalized schema
+      │
+      ▼
 PostgreSQL
 ```
 
-## Features
+- `src/main.rs` — Actix-web server, builds the schema, wires `/graphql` (POST) and
+  a GraphQL Playground (GET `/graphql` and `/`).
+- `src/schema.rs` — `QueryRoot`, `MutationRoot`, and the GraphQL object types.
+  Each field is a lazily-evaluated resolver, so unselected fields cost nothing.
+- `src/db.rs` — `sqlx` queries against the normalized tables.
+- `src/models.rs` / `src/errors.rs` — row structs and error type.
 
-- **Query Interface**:
-  - `listSensorTypes` - Get all sensor types
-  - `listReadings` - Get readings with pagination (limit, offset)
-  - `getReading` - Get a specific reading by ID
-  - `aggregateReadings` - Get daily aggregated readings for a sensor
+## Data model (important)
 
-- **Mutation Interface**:
-  - `createReading` - Create a new sensor reading
+The GraphQL types are a **flattened view** of the project's normalized schema
+(`devices`, `readings`, `reading_values`, `sensor_types`). One `Reading` in
+GraphQL corresponds to a single **(reading, sensor)** measurement:
 
-- **Error Handling**: GraphQL-compliant error responses with validation
+| GraphQL field | Source |
+|---|---|
+| `id` | `readings.id * 1000 + sensor_types.id` (synthetic composite) |
+| `deviceId` | `devices.external_id` (e.g. `air-quality-station-01`) |
+| `sensorCode` / `sensorName` | `sensor_types.code` / `.label` |
+| `measuredValue` | `reading_values.numeric_value` |
+| `measuredAt` | `readings.recorded_at` (RFC3339 string) |
+| `createdAt` | `readings.created_at` (RFC3339 string) |
 
-- **Performance**: Uses connection pooling (20 max connections) for efficient database access
+Valid sensor codes are the catalog codes: `temperature`, `relative_humidity`,
+`absolute_humidity`, `co_gt`, `no2_gt`, `nox_gt`, `c6h6_gt`, `pt08_s1_co`,
+`pt08_s2_nmhc`, `pt08_s3_nox`, `pt08_s4_no2`, `pt08_s5_o3`, `nmhc_gt`.
 
-## Dependencies
+## Schema
 
-- `async-graphql` - GraphQL server framework
-- `actix-web` - Web server
-- `sqlx` - Async SQL toolkit with Postgres support
-- `tokio` - Async runtime
-- `chrono` - Date/time handling
-- `serde` - JSON serialization
-
-## Building
-
-```bash
-cargo build --release
-```
-
-## Running Locally
-
-```bash
-# Set environment variables
-export DATABASE_URL=postgresql://user:password@localhost:5432/iot_db
-export RUST_LOG=debug
-
-# Run service
-cargo run
-```
-
-Service starts on `http://0.0.0.0:8000`
-
-## Running in Docker
-
-```bash
-docker build -t graphql-service-rust .
-docker run -p 8000:8000 \
-  -e DATABASE_URL=postgresql://user:password@postgres:5432/iot_db \
-  graphql-service-rust
-```
-
-## GraphQL Endpoint
-
-**URL**: `http://localhost:8000/graphql`
-
-### Query Examples
-
-**Get all sensor types**:
 ```graphql
-query {
-  listSensorTypes {
-    id
-    sensorCode
-    sensorName
-    unit
-  }
+type Query {
+  listSensorTypes: [SensorType!]!
+  listReadings(limit: Int = 20, offset: Int = 0): [Reading!]!
+  getReading(id: Int!): Reading!
+  aggregateReadings(sensorCode: String!, startDate: String, endDate: String): [AggregatePoint!]!
 }
-```
 
-**Get paginated readings**:
-```graphql
-query {
-  listReadings(limit: 10, offset: 0) {
-    id
-    deviceId
-    sensorCode
-    sensorName
-    measuredValue
-    measuredAt
-    createdAt
-  }
+type Mutation {
+  createReading(deviceId: String!, sensorCode: String!, measuredValue: Float!, measuredAt: String): Reading!
 }
+
+type Reading {
+  id: Int!
+  deviceId: String!
+  sensorCode: String!
+  sensorName: String!
+  measuredValue: Float!
+  measuredAt: String!
+  createdAt: String!
+}
+
+type SensorType { id: Int!  sensorCode: String!  sensorName: String!  unit: String! }
+
+type AggregatePoint { sensorCode: String!  measuredAt: String!  avgValue: Float!  minValue: Float!  maxValue: Float!  count: Int! }
 ```
 
-**Get specific reading**:
+## Endpoint
+
+- **POST** `http://localhost:8000/graphql` — execute queries/mutations.
+- **GET** `http://localhost:8000/graphql` (or `/`) — interactive GraphQL Playground.
+
+### Field selection (over-fetch avoidance)
+
 ```graphql
+# asks for two fields -> response contains exactly two fields
 query {
-  getReading(id: 1) {
+  listReadings(limit: 2) {
     id
-    deviceId
-    sensorCode
     measuredValue
   }
 }
 ```
 
-**Aggregate readings by day**:
+```json
+{ "data": { "listReadings": [
+  { "id": 9357013, "measuredValue": 0.5028 },
+  { "id": 9357004, "measuredValue": 11.9 }
+] } }
+```
+
+### Aggregate
+
 ```graphql
 query {
   aggregateReadings(
-    sensorCode: "NO2"
-    startDate: "2023-01-01T00:00:00Z"
-    endDate: "2023-01-31T23:59:59Z"
+    sensorCode: "temperature"
+    startDate: "2004-03-10T00:00:00Z"
+    endDate: "2004-03-20T00:00:00Z"
   ) {
-    sensorCode
     measuredAt
     avgValue
     minValue
@@ -133,19 +125,17 @@ query {
 }
 ```
 
-### Mutation Examples
+### Create reading (mutation)
 
-**Create reading**:
 ```graphql
 mutation {
   createReading(
-    deviceId: "station-001"
-    sensorCode: "NO2"
-    measuredValue: 45.2
-    measuredAt: "2023-12-20T14:30:00Z"
+    deviceId: "air-quality-station-01"
+    sensorCode: "temperature"
+    measuredValue: 21.5
+    measuredAt: "2026-05-17T00:00:00Z"
   ) {
     id
-    deviceId
     sensorCode
     measuredValue
     createdAt
@@ -153,82 +143,58 @@ mutation {
 }
 ```
 
-## Database Schema
+Variables are supported in the standard way:
 
-The service expects these tables:
-
-```sql
--- sensor_types table
-CREATE TABLE sensor_types (
-  id SERIAL PRIMARY KEY,
-  sensor_code VARCHAR(50) UNIQUE NOT NULL,
-  sensor_name VARCHAR(255) NOT NULL,
-  unit VARCHAR(50) NOT NULL
-);
-
--- readings table
-CREATE TABLE readings (
-  id SERIAL PRIMARY KEY,
-  device_id VARCHAR(100) NOT NULL,
-  sensor_code VARCHAR(50) NOT NULL,
-  sensor_name VARCHAR(255) NOT NULL,
-  measured_value FLOAT NOT NULL,
-  measured_at TIMESTAMP WITH TIME ZONE NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE NOT NULL
-);
-```
-
-## Error Handling
-
-Common error responses:
-
-- **InvalidArgument**: Input validation failed (e.g., limit > 100)
-- **NotFound**: Resource doesn't exist
-- **DuplicateSensorCode**: Sensor code collision after normalization
-- **DatabaseError**: Database operation failed
-- **InternalServerError**: Unexpected server error
-
-Example error response:
 ```json
-{
-  "errors": [
-    {
-      "message": "limit must be between 1 and 100"
-    }
-  ]
-}
+{ "query": "query($l:Int!){ listReadings(limit:$l){ id sensorCode } }", "variables": { "l": 5 } }
 ```
 
-## Environment Variables
+## Build & run
 
-- `RUST_LOG` - Log level (default: info)
-- `DATABASE_URL` - PostgreSQL connection string
-- `POSTGRES_USER` - Fallback database user
-- `POSTGRES_PASSWORD` - Fallback database password
-- `POSTGRES_DB` - Fallback database name
-- `POSTGRES_HOST` - Fallback database host (default: localhost)
+```bash
+# via Docker Compose (from project-one/)
+docker compose up --build graphql-service-rust
 
-## Performance Characteristics
+# locally
+export DATABASE_URL=postgresql://iot_user:iot_password@localhost:5432/iot_project
+cargo run
+```
 
-- Connection pool: 20 concurrent connections
-- Single GraphQL endpoint reduces over-fetching
-- async-graphql compiles to efficient resolver code
-- Tokio runtime provides high concurrency
-- SQLx supports prepared statements and query caching
+## Environment variables
 
-## Comparison with REST/gRPC
+- `DATABASE_URL` — full PostgreSQL connection string (preferred).
+- `POSTGRES_USER` / `POSTGRES_PASSWORD` / `POSTGRES_DB` / `POSTGRES_HOST` — fallback
+  parts used to build the URL when `DATABASE_URL` is unset.
+- `RUST_LOG` — log level (default `info`).
+
+## Error handling
+
+async-graphql validates every request against the schema, so unknown fields or
+wrong argument types are rejected before any resolver runs:
+
+```json
+{ "data": null, "errors": [ { "message": "Unknown field \"nope\" on type \"Reading\"." } ] }
+```
+
+Resolver-level failures (bad date format, unknown sensor code, limit out of range,
+database errors) are returned as GraphQL `errors` with a descriptive message.
+
+## Comparison with REST / gRPC
 
 | Aspect | GraphQL | REST | gRPC |
 |---|---|---|---|
-| Protocol | HTTP | HTTP | HTTP/2 |
-| Payload | JSON | JSON | Protobuf |
-| Overfetch | No | Yes | No |
-| Query Flexibility | High | Low | Low |
-| Learning Curve | Moderate | Low | High |
-| Tooling | Growing | Excellent | Good |
+| Transport | HTTP/1.1 | HTTP/1.1 | HTTP/2 |
+| Payload | JSON | JSON | Protobuf (binary) |
+| Field selection | Yes (per query) | No (fixed shape) | No (fixed message) |
+| Over-fetching | Avoided | Possible | Message-shaped |
+| Single endpoint | Yes | No (many routes) | No (many methods) |
+| Schema/contract | GraphQL SDL | OpenAPI | `.proto` |
 
-## Related Documentation
+See [`../docs/protocol-comparison.md`](../docs/protocol-comparison.md) for the full
+analysis and measured payload sizes.
 
-- [Project README](../README.md) - Main project overview
-- [REST Service](../rest-service-csharp/README.md) - C# REST implementation
-- [gRPC Service](../grpc-service-go/README.md) - Go gRPC implementation
+## Related documentation
+
+- [Project README](../README.md)
+- [Architecture & diagrams](../docs/architecture.md)
+- [REST service](../rest-service-csharp/README.md) · [gRPC service](../grpc-service-go/README.md)

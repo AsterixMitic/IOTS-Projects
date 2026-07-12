@@ -1,0 +1,72 @@
+{
+    "metrics": {
+        "grpc_req_duration": {
+            "avg": 1966.856054234491,
+            "min": 285.963037,
+            "med": 2046.713019,
+            "max": 2506.642062,
+            "p(90)": 2246.823357,
+            "p(95)": 2283.231749
+        },
+        "data_sent": {
+            "count": 109619,
+            "rate": 7724.293720898634
+        },
+        "data_received": {
+            "count": 1694989,
+            "rate": 119437.25895777425
+        },
+        "iteration_duration": {
+            "p(95)": 2288.031271,
+            "avg": 1985.139495990924,
+            "min": 310.498306,
+            "med": 2053.953964,
+            "max": 2507.950734,
+            "p(90)": 2252.186128
+        },
+        "iterations": {
+            "count": 661,
+            "rate": 46.57731004218245
+        },
+        "vus": {
+            "max": 100,
+            "value": 14,
+            "min": 14
+        },
+        "vus_max": {
+            "value": 100,
+            "min": 100,
+            "max": 100
+        },
+        "checks": {
+            "passes": 1322,
+            "fails": 0,
+            "thresholds": {
+                "rate>0.95": false
+            },
+            "value": 1
+        }
+    },
+    "root_group": {
+        "name": "",
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {},
+        "checks": {
+                "gRPC selective monitoring accepted": {
+                    "name": "gRPC selective monitoring accepted",
+                    "path": "::gRPC selective monitoring accepted",
+                    "id": "bc0ba1b98f0497e5c0e29d3daef947a0",
+                    "passes": 661,
+                    "fails": 0
+                },
+                "gRPC returned readings array": {
+                    "name": "gRPC returned readings array",
+                    "path": "::gRPC returned readings array",
+                    "id": "05ccf980d979459509313b8ce38a1886",
+                    "passes": 661,
+                    "fails": 0
+                }
+            }
+    }
+}

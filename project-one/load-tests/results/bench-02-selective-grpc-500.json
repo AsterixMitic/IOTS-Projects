@@ -1,0 +1,72 @@
+{
+    "root_group": {
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {},
+        "checks": {
+                "gRPC selective monitoring accepted": {
+                    "fails": 0,
+                    "name": "gRPC selective monitoring accepted",
+                    "path": "::gRPC selective monitoring accepted",
+                    "id": "bc0ba1b98f0497e5c0e29d3daef947a0",
+                    "passes": 1004
+                },
+                "gRPC returned readings array": {
+                    "name": "gRPC returned readings array",
+                    "path": "::gRPC returned readings array",
+                    "id": "05ccf980d979459509313b8ce38a1886",
+                    "passes": 1004,
+                    "fails": 0
+                }
+            },
+        "name": "",
+        "path": ""
+    },
+    "metrics": {
+        "iterations": {
+            "count": 1154,
+            "rate": 49.641088482094936
+        },
+        "vus": {
+            "min": 32,
+            "max": 500,
+            "value": 32
+        },
+        "vus_max": {
+            "value": 500,
+            "min": 500,
+            "max": 500
+        },
+        "grpc_req_duration": {
+            "avg": 8377.181590407366,
+            "min": 518.242324,
+            "med": 10658.137102,
+            "max": 11493.496304,
+            "p(90)": 11164.2663956,
+            "p(95)": 11275.3322039
+        },
+        "checks": {
+            "passes": 2008,
+            "fails": 0,
+            "thresholds": {
+                "rate>0.95": false
+            },
+            "value": 1
+        },
+        "data_sent": {
+            "count": 217134,
+            "rate": 9340.353645122359
+        },
+        "data_received": {
+            "count": 2588919,
+            "rate": 111366.34068628834
+        },
+        "iteration_duration": {
+            "med": 9622.4466335,
+            "max": 12016.478896,
+            "p(90)": 11163.1113103,
+            "p(95)": 11282.89400675,
+            "avg": 7523.729447876945,
+            "min": 32.127743
+        }
+    }
+}

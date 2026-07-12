@@ -1,0 +1,72 @@
+{
+    "metrics": {
+        "data_sent": {
+            "count": 1158538,
+            "rate": 95651.69195675684
+        },
+        "data_received": {
+            "count": 707408,
+            "rate": 58405.31092095852
+        },
+        "iteration_duration": {
+            "med": 138.59621199999998,
+            "max": 358.021049,
+            "p(90)": 208.91373109999998,
+            "p(95)": 240.64856955,
+            "avg": 149.12856072934215,
+            "min": 61.171838
+        },
+        "iterations": {
+            "count": 8084,
+            "rate": 667.4345405834097
+        },
+        "vus": {
+            "min": 100,
+            "max": 100,
+            "value": 100
+        },
+        "vus_max": {
+            "value": 100,
+            "min": 100,
+            "max": 100
+        },
+        "checks": {
+            "passes": 16168,
+            "fails": 0,
+            "thresholds": {
+                "rate>0.95": false
+            },
+            "value": 1
+        },
+        "grpc_req_duration": {
+            "max": 323.231726,
+            "p(90)": 204.206183,
+            "p(95)": 234.70086869999977,
+            "avg": 146.77219464089552,
+            "min": 39.084298,
+            "med": 137.21786
+        }
+    },
+    "root_group": {
+        "name": "",
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {},
+        "checks": {
+                "gRPC ingestion accepted": {
+                    "fails": 0,
+                    "name": "gRPC ingestion accepted",
+                    "path": "::gRPC ingestion accepted",
+                    "id": "72f85a432998e8b22c36e30d8545810d",
+                    "passes": 8084
+                },
+                "gRPC returned id": {
+                    "name": "gRPC returned id",
+                    "path": "::gRPC returned id",
+                    "id": "0d961391f6e5c4e2ef544ede6e940bad",
+                    "passes": 8084,
+                    "fails": 0
+                }
+            }
+    }
+}

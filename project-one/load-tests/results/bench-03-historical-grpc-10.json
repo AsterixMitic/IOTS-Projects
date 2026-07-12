@@ -1,0 +1,72 @@
+{
+    "metrics": {
+        "checks": {
+            "fails": 0,
+            "passes": 1516,
+            "thresholds": {
+                "rate>0.95": false
+            },
+            "value": 1
+        },
+        "grpc_req_duration": {
+            "avg": 148.31337962137184,
+            "min": 72.597202,
+            "med": 138.5616885,
+            "max": 512.970994,
+            "p(90)": 185.8328095,
+            "p(95)": 214.64753915
+        },
+        "data_sent": {
+            "count": 94793,
+            "rate": 7801.628321513814
+        },
+        "data_received": {
+            "count": 11385706,
+            "rate": 937063.3526740347
+        },
+        "iteration_duration": {
+            "p(95)": 233.30825729999992,
+            "avg": 160.1952079327176,
+            "min": 83.769705,
+            "med": 149.4695785,
+            "max": 521.310499,
+            "p(90)": 198.33214340000004
+        },
+        "iterations": {
+            "rate": 62.384714775431426,
+            "count": 758
+        },
+        "vus": {
+            "value": 10,
+            "min": 10,
+            "max": 10
+        },
+        "vus_max": {
+            "max": 10,
+            "value": 10,
+            "min": 10
+        }
+    },
+    "root_group": {
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {},
+        "checks": {
+                "gRPC historical aggregation accepted": {
+                    "fails": 0,
+                    "name": "gRPC historical aggregation accepted",
+                    "path": "::gRPC historical aggregation accepted",
+                    "id": "b0931b72ea27697c5053dc920bf23e84",
+                    "passes": 758
+                },
+                "gRPC returned aggregate array": {
+                    "id": "218877ef31261191efdde47abf2852a9",
+                    "passes": 758,
+                    "fails": 0,
+                    "name": "gRPC returned aggregate array",
+                    "path": "::gRPC returned aggregate array"
+                }
+            },
+        "name": "",
+        "path": ""
+    }
+}

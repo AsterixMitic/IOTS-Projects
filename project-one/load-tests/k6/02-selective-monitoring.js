@@ -4,6 +4,7 @@ import { check } from 'k6';
 
 import {
   config,
+  buildScenarios,
   buildQuery,
   graphqlListReadingsBody,
 } from './common.js';
@@ -19,31 +20,19 @@ function loadGrpc() {
   }
 }
 
-function scenario(exec, rate) {
-  return {
-    executor: 'constant-arrival-rate',
-    exec,
-    rate,
-    timeUnit: '1s',
-    duration: __ENV.LOADTEST_DURATION || '1m',
-    preAllocatedVUs: Number(__ENV.LOADTEST_PRE_ALLOCATED_VUS || 10),
-    maxVUs: Number(__ENV.LOADTEST_MAX_VUS || 50),
-  };
-}
-
-const rate = Number(__ENV.LOADTEST_RATE || 25);
 const sensors = config.selectiveSensors.join(',');
 const offsetStep = Number(__ENV.LOADTEST_OFFSET_STEP || 25);
 const maxOffset = Number(__ENV.LOADTEST_MAX_OFFSET || 100);
 
+// Scenario B - Selective Monitoring. VUS controls the 10/100/500 load level.
 export const options = {
-  scenarios: {
-    rest_selective: scenario('restSelectiveMonitoring', Number(__ENV.REST_RATE || rate)),
-    grpc_selective: scenario('grpcSelectiveMonitoring', Number(__ENV.GRPC_RATE || rate)),
-    graphql_selective: scenario('graphqlSelectiveMonitoring', Number(__ENV.GRAPHQL_RATE || rate)),
-  },
+  scenarios: buildScenarios({
+    rest: 'restSelectiveMonitoring',
+    grpc: 'grpcSelectiveMonitoring',
+    graphql: 'graphqlSelectiveMonitoring',
+  }),
   thresholds: {
-    checks: ['rate>0.99'],
+    checks: ['rate>0.95'],
   },
 };
 

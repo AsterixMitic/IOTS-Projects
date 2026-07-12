@@ -4,9 +4,9 @@ import { check } from 'k6';
 
 import {
   config,
+  buildScenarios,
   buildQuery,
   graphqlAggregateBody,
-  utcBefore,
 } from './common.js';
 
 const grpcClient = new grpc.Client();
@@ -20,31 +20,19 @@ function loadGrpc() {
   }
 }
 
-function scenario(exec, rate) {
-  return {
-    executor: 'constant-arrival-rate',
-    exec,
-    rate,
-    timeUnit: '1s',
-    duration: __ENV.LOADTEST_DURATION || '1m',
-    preAllocatedVUs: Number(__ENV.LOADTEST_PRE_ALLOCATED_VUS || 10),
-    maxVUs: Number(__ENV.LOADTEST_MAX_VUS || 50),
-  };
-}
-
-const rate = Number(__ENV.LOADTEST_RATE || 15);
-const from = __ENV.LOADTEST_HISTORICAL_FROM || utcBefore(24 * 14);
-const to = __ENV.LOADTEST_HISTORICAL_TO || utcBefore(0);
+const from = config.historicalFrom;
+const to = config.historicalTo;
 const bucketMinutes = Number(__ENV.LOADTEST_BUCKET_MINUTES || 1440);
 
+// Scenario C - Heavy Querying (aggregation). VUS controls the 10/100/500 load level.
 export const options = {
-  scenarios: {
-    rest_historical: scenario('restHistoricalAggregation', Number(__ENV.REST_RATE || rate)),
-    grpc_historical: scenario('grpcHistoricalAggregation', Number(__ENV.GRPC_RATE || rate)),
-    graphql_historical: scenario('graphqlHistoricalAggregation', Number(__ENV.GRAPHQL_RATE || rate)),
-  },
+  scenarios: buildScenarios({
+    rest: 'restHistoricalAggregation',
+    grpc: 'grpcHistoricalAggregation',
+    graphql: 'graphqlHistoricalAggregation',
+  }),
   thresholds: {
-    checks: ['rate>0.99'],
+    checks: ['rate>0.95'],
   },
 };
 

@@ -1,0 +1,137 @@
+{
+    "root_group": {
+        "groups": {},
+        "checks": {
+                "GraphQL historical aggregation accepted": {
+                    "fails": 0,
+                    "name": "GraphQL historical aggregation accepted",
+                    "path": "::GraphQL historical aggregation accepted",
+                    "id": "a7a56b6f8322dcf2b0c9b707d0c4f62d",
+                    "passes": 1600
+                },
+                "GraphQL returned aggregate array": {
+                    "id": "e0d3d5603722d2066ca48f506e44e1da",
+                    "passes": 1600,
+                    "fails": 0,
+                    "name": "GraphQL returned aggregate array",
+                    "path": "::GraphQL returned aggregate array"
+                }
+            },
+        "name": "",
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "metrics": {
+        "http_req_tls_handshaking": {
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "max": 0
+        },
+        "http_req_sending": {
+            "p(90)": 10.753526300000015,
+            "p(95)": 25.372436599999993,
+            "avg": 4.032794030000003,
+            "min": 0.021941,
+            "med": 0.08550150000000001,
+            "max": 232.526078
+        },
+        "http_req_receiving": {
+            "max": 1322.875749,
+            "p(90)": 226.2959541000003,
+            "p(95)": 524.1246541999998,
+            "avg": 91.32785213500017,
+            "min": 0.146118,
+            "med": 32.844414
+        },
+        "http_req_blocked": {
+            "med": 0.015982,
+            "max": 374.315243,
+            "p(90)": 181.45182480000003,
+            "p(95)": 251.78331009999997,
+            "avg": 46.92895097812487,
+            "min": 0.006873
+        },
+        "data_sent": {
+            "count": 716800,
+            "rate": 44140.521982556675
+        },
+        "http_req_waiting": {
+            "avg": 4154.800654253133,
+            "min": 226.095687,
+            "med": 4745.9766175,
+            "max": 6576.832917,
+            "p(90)": 5157.3239997,
+            "p(95)": 5251.9173608
+        },
+        "iteration_duration": {
+            "p(95)": 5689.64158745,
+            "avg": 4348.243352321876,
+            "min": 374.477071,
+            "med": 4843.7319179999995,
+            "max": 7218.134035,
+            "p(90)": 5344.9196063
+        },
+        "http_req_duration": {
+            "med": 4807.778328,
+            "max": 7017.487358,
+            "p(90)": 5285.7843024,
+            "p(95)": 5493.6286001,
+            "avg": 4250.16130041813,
+            "min": 331.238077
+        },
+        "http_req_duration{expected_response:true}": {
+            "max": 7017.487358,
+            "p(90)": 5285.7843024,
+            "p(95)": 5493.6286001,
+            "avg": 4250.16130041813,
+            "min": 331.238077,
+            "med": 4807.778328
+        },
+        "vus": {
+            "value": 79,
+            "min": 79,
+            "max": 500
+        },
+        "http_req_connecting": {
+            "p(90)": 136.33767380000003,
+            "p(95)": 150.51935170000002,
+            "avg": 30.873660082499992,
+            "min": 0,
+            "med": 0,
+            "max": 228.863145
+        },
+        "http_req_failed": {
+            "fails": 1600,
+            "passes": 0,
+            "value": 0
+        },
+        "vus_max": {
+            "max": 500,
+            "value": 500,
+            "min": 500
+        },
+        "checks": {
+            "passes": 3200,
+            "fails": 0,
+            "thresholds": {
+                "rate>0.95": false
+            },
+            "value": 1
+        },
+        "iterations": {
+            "rate": 98.52795085392115,
+            "count": 1600
+        },
+        "data_received": {
+            "count": 85097600,
+            "rate": 5240307.5941166505
+        },
+        "http_reqs": {
+            "count": 1600,
+            "rate": 98.52795085392115
+        }
+    }
+}

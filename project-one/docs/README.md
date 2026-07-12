@@ -37,21 +37,16 @@ This ensures:
 
 ---
 
-### Step 2: Excalidraw (visual refinement)
+The complete, rendered set of diagrams (system architecture, ER model,
+per-protocol data flow, and the three scenario sequence diagrams) lives in
+[`architecture.md`](architecture.md) — that file is the source of truth.
 
-The Mermaid diagram is then manually recreated in Excalidraw:
+### Step 2 (optional): Excalidraw (visual refinement)
 
-- Improved spatial layout
-- Better visual grouping (services, observability layer, clients)
-- Icons and semantic clarity
-- Presentation-ready diagrams
-
-Stored in:
-
-```
-docs/excalidraw/architecture.excalidraw
-docs/excalidraw/architecture.png
-```
+The Mermaid diagrams can optionally be recreated in Excalidraw for
+presentation-ready visuals (improved layout, icons, grouping). If produced, store
+them alongside the docs, e.g. `docs/excalidraw/architecture.excalidraw` /
+`.png`. This step is not required — the Mermaid source renders directly on GitHub.
 
 ---
 

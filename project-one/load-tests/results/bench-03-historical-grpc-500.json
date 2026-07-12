@@ -1,0 +1,72 @@
+{
+    "root_group": {
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {},
+        "checks": {
+                "gRPC historical aggregation accepted": {
+                    "id": "b0931b72ea27697c5053dc920bf23e84",
+                    "passes": 1435,
+                    "fails": 0,
+                    "name": "gRPC historical aggregation accepted",
+                    "path": "::gRPC historical aggregation accepted"
+                },
+                "gRPC returned aggregate array": {
+                    "path": "::gRPC returned aggregate array",
+                    "id": "218877ef31261191efdde47abf2852a9",
+                    "passes": 1435,
+                    "fails": 0,
+                    "name": "gRPC returned aggregate array"
+                }
+            },
+        "name": "",
+        "path": ""
+    },
+    "metrics": {
+        "vus": {
+            "value": 4,
+            "min": 4,
+            "max": 500
+        },
+        "vus_max": {
+            "value": 500,
+            "min": 500,
+            "max": 500
+        },
+        "grpc_req_duration": {
+            "p(95)": 6349.0130856999995,
+            "avg": 5034.909315309418,
+            "min": 408.071318,
+            "med": 5710.087228,
+            "max": 6895.197322,
+            "p(90)": 6203.144990800001
+        },
+        "data_sent": {
+            "rate": 14241.105581446296,
+            "count": 249277
+        },
+        "data_received": {
+            "count": 21577192,
+            "rate": 1232697.2381051537
+        },
+        "iteration_duration": {
+            "p(90)": 6317.9185656,
+            "p(95)": 6550.2596886,
+            "avg": 5251.158094117776,
+            "min": 549.876852,
+            "med": 5752.141714,
+            "max": 7462.488605
+        },
+        "iterations": {
+            "count": 1435,
+            "rate": 81.98103519127491
+        },
+        "checks": {
+            "passes": 2870,
+            "fails": 0,
+            "thresholds": {
+                "rate>0.95": false
+            },
+            "value": 1
+        }
+    }
+}

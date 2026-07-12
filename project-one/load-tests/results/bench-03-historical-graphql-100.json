@@ -1,0 +1,137 @@
+{
+    "root_group": {
+        "name": "",
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {},
+        "checks": {
+                "GraphQL historical aggregation accepted": {
+                    "name": "GraphQL historical aggregation accepted",
+                    "path": "::GraphQL historical aggregation accepted",
+                    "id": "a7a56b6f8322dcf2b0c9b707d0c4f62d",
+                    "passes": 1069,
+                    "fails": 0
+                },
+                "GraphQL returned aggregate array": {
+                    "path": "::GraphQL returned aggregate array",
+                    "id": "e0d3d5603722d2066ca48f506e44e1da",
+                    "passes": 1069,
+                    "fails": 0,
+                    "name": "GraphQL returned aggregate array"
+                }
+            }
+    },
+    "metrics": {
+        "iteration_duration": {
+            "p(95)": 2923.8704343999993,
+            "avg": 1179.7031014714687,
+            "min": 182.108962,
+            "med": 982.02227,
+            "max": 3745.974022,
+            "p(90)": 2144.6935050000006
+        },
+        "data_received": {
+            "count": 56855834,
+            "rate": 4476153.006095903
+        },
+        "http_reqs": {
+            "count": 1069,
+            "rate": 84.16036186394733
+        },
+        "http_req_tls_handshaking": {
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0
+        },
+        "checks": {
+            "fails": 0,
+            "passes": 2138,
+            "thresholds": {
+                "rate>0.95": false
+            },
+            "value": 1
+        },
+        "vus_max": {
+            "value": 100,
+            "min": 100,
+            "max": 100
+        },
+        "http_req_duration": {
+            "med": 946.563344,
+            "max": 3611.498834,
+            "p(90)": 2126.2621114000012,
+            "p(95)": 2834.2320342,
+            "avg": 1131.8396870102886,
+            "min": 130.112316
+        },
+        "http_req_receiving": {
+            "med": 41.589456,
+            "max": 2645.597834,
+            "p(90)": 668.2773658000001,
+            "p(95)": 871.2685385999998,
+            "avg": 206.39835262394774,
+            "min": 0.14815
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 1069,
+            "value": 0
+        },
+        "http_req_blocked": {
+            "min": 0.006273,
+            "med": 0.014719,
+            "max": 104.413188,
+            "p(90)": 0.4063504000000005,
+            "p(95)": 74.21065619999999,
+            "avg": 7.375055698783924
+        },
+        "http_req_connecting": {
+            "min": 0,
+            "med": 0,
+            "max": 93.144553,
+            "p(90)": 0,
+            "p(95)": 65.5855484,
+            "avg": 6.215793263797942
+        },
+        "http_req_duration{expected_response:true}": {
+            "med": 946.563344,
+            "max": 3611.498834,
+            "p(90)": 2126.2621114000012,
+            "p(95)": 2834.2320342,
+            "avg": 1131.8396870102886,
+            "min": 130.112316
+        },
+        "http_req_sending": {
+            "p(95)": 1.9294275999999952,
+            "avg": 0.5684074705332088,
+            "min": 0.022545,
+            "med": 0.074531,
+            "max": 60.346862,
+            "p(90)": 0.4094432000000001
+        },
+        "http_req_waiting": {
+            "min": 109.769005,
+            "med": 890.274845,
+            "max": 2526.868473,
+            "p(90)": 1301.6757960000002,
+            "p(95)": 2054.2833027999995,
+            "avg": 924.8729269158086
+        },
+        "vus": {
+            "max": 100,
+            "value": 100,
+            "min": 100
+        },
+        "iterations": {
+            "rate": 84.16036186394733,
+            "count": 1069
+        },
+        "data_sent": {
+            "rate": 37703.84211504841,
+            "count": 478912
+        }
+    }
+}

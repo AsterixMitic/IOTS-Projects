@@ -10,6 +10,8 @@ path = "src/main.rs"
 [dependencies]
 actix-web = "4.4"
 actix-rt = "2.9"
+async-graphql = "7"
+async-graphql-actix-web = "7"
 sqlx = { version = "0.7.3", features = ["postgres", "chrono", "uuid", "runtime-tokio-native-tls"] }
 tokio = { version = "1.35", features = ["full"] }
 serde = { version = "1.0", features = ["derive"] }

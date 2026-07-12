@@ -5,7 +5,9 @@ BEGIN;
 -- Truncate previous import data (idempotent import)
 TRUNCATE reading_values, readings RESTART IDENTITY;
 
--- Insert readings (one row per timestamp)
+-- Insert readings (one row per timestamp).
+-- The UCI dataset ships with trailing all-empty rows; guard against them so
+-- to_timestamp()/to_date() never receive an empty string.
 WITH device AS (SELECT id AS device_id FROM devices WHERE external_id = 'air-quality-station-01')
 INSERT INTO readings (device_id, recorded_at, source_date, source_time, notes)
 SELECT device.device_id,
@@ -13,7 +15,9 @@ SELECT device.device_id,
        to_date(s.date_col, 'DD/MM/YYYY'),
        replace(s.time_col, '.', ':')::time,
        'Imported from staging'
-FROM staging_airquality s, device;
+FROM staging_airquality s, device
+WHERE s.date_col IS NOT NULL AND btrim(s.date_col) <> ''
+  AND s.time_col IS NOT NULL AND btrim(s.time_col) <> '';
 
 -- Unpivot sensor columns and insert all values in a single set-based statement.
 -- This replaces multiple repetitive INSERTs with a CROSS JOIN LATERAL VALUES approach.

@@ -1,159 +1,195 @@
-use juniper::{RootNode, graphql_object, EmptyMutation};
-use chrono::{DateTime, Utc};
-use crate::db::DbPool;
-use crate::models::{SensorType, Reading, AggregatePoint};
+//! GraphQL schema for the IoT readings API.
+//!
+//! Every field is a lazily-evaluated resolver method, so a client that selects
+//! only `id` never pays to serialize `sensorName`, `measuredAt`, etc. This is
+//! what gives GraphQL its selective-monitoring advantage over REST/gRPC: the
+//! server does the minimal work for exactly the fields the client asked for
+//! (no over-fetching).
+
 use std::sync::Arc;
 
-pub struct Context {
-    pub db: Arc<DbPool>,
-}
+use async_graphql::{Context, EmptySubscription, Object, Schema};
+use chrono::{DateTime, Utc};
 
-impl juniper::Context for Context {}
+use crate::db::DbPool;
+use crate::models::{AggregatePoint, Reading, SensorType};
 
-#[graphql_object(context = Context)]
-impl SensorType {
-    fn id(&self) -> i32 {
-        self.id
-    }
-    fn sensor_code(&self) -> &str {
-        &self.sensor_code
-    }
-    fn sensor_name(&self) -> &str {
-        &self.sensor_name
-    }
-    fn unit(&self) -> &str {
-        &self.unit
-    }
-}
+/// A catalog entry describing one measured quantity (temperature, NO2, ...).
+pub struct SensorTypeGql(pub SensorType);
 
-#[graphql_object(context = Context)]
-impl Reading {
-    fn id(&self) -> i32 {
-        self.id
+#[Object(name = "SensorType")]
+impl SensorTypeGql {
+    async fn id(&self) -> i32 {
+        self.0.id as i32
     }
-    fn device_id(&self) -> &str {
-        &self.device_id
+    async fn sensor_code(&self) -> &str {
+        &self.0.sensor_code
     }
-    fn sensor_code(&self) -> &str {
-        &self.sensor_code
+    async fn sensor_name(&self) -> &str {
+        &self.0.sensor_name
     }
-    fn sensor_name(&self) -> &str {
-        &self.sensor_name
-    }
-    fn measured_value(&self) -> f64 {
-        self.measured_value
-    }
-    fn measured_at(&self) -> DateTime<Utc> {
-        self.measured_at
-    }
-    fn created_at(&self) -> DateTime<Utc> {
-        self.created_at
+    async fn unit(&self) -> &str {
+        &self.0.unit
     }
 }
 
-#[graphql_object(context = Context)]
-impl AggregatePoint {
-    fn sensor_code(&self) -> &str {
-        &self.sensor_code
+/// A single (reading, sensor) measurement flattened from the normalized schema.
+pub struct ReadingGql(pub Reading);
+
+#[Object(name = "Reading")]
+impl ReadingGql {
+    async fn id(&self) -> i32 {
+        self.0.id as i32
     }
-    fn measured_at(&self) -> DateTime<Utc> {
-        self.measured_at
+    async fn device_id(&self) -> &str {
+        &self.0.device_id
     }
-    fn avg_value(&self) -> f64 {
-        self.avg_value
+    async fn sensor_code(&self) -> &str {
+        &self.0.sensor_code
     }
-    fn min_value(&self) -> f64 {
-        self.min_value
+    async fn sensor_name(&self) -> &str {
+        &self.0.sensor_name
     }
-    fn max_value(&self) -> f64 {
-        self.max_value
+    async fn measured_value(&self) -> f64 {
+        self.0.measured_value
     }
-    fn count(&self) -> i64 {
-        self.count
+    async fn measured_at(&self) -> String {
+        self.0.measured_at.to_rfc3339()
+    }
+    async fn created_at(&self) -> String {
+        self.0.created_at.to_rfc3339()
     }
 }
 
-pub struct Query;
+/// A time-bucketed aggregate over one sensor's values.
+pub struct AggregatePointGql(pub AggregatePoint);
 
-#[graphql_object(context = Context)]
-impl Query {
-    async fn list_sensor_types(context: &Context) -> Result<Vec<SensorType>, String> {
-        context.db
+#[Object(name = "AggregatePoint")]
+impl AggregatePointGql {
+    async fn sensor_code(&self) -> &str {
+        &self.0.sensor_code
+    }
+    async fn measured_at(&self) -> String {
+        self.0.measured_at.to_rfc3339()
+    }
+    async fn avg_value(&self) -> f64 {
+        self.0.avg_value
+    }
+    async fn min_value(&self) -> f64 {
+        self.0.min_value
+    }
+    async fn max_value(&self) -> f64 {
+        self.0.max_value
+    }
+    async fn count(&self) -> i32 {
+        self.0.count as i32
+    }
+}
+
+fn parse_rfc3339(label: &str, value: &str) -> async_graphql::Result<DateTime<Utc>> {
+    DateTime::parse_from_rfc3339(value)
+        .map(|dt| dt.with_timezone(&Utc))
+        .map_err(|_| async_graphql::Error::new(format!("Invalid {label} format (expected RFC3339)")))
+}
+
+pub struct QueryRoot;
+
+#[Object]
+impl QueryRoot {
+    /// List the sensor-type catalog.
+    async fn list_sensor_types(&self, ctx: &Context<'_>) -> async_graphql::Result<Vec<SensorTypeGql>> {
+        let db = ctx.data_unchecked::<Arc<DbPool>>();
+        let rows = db
             .list_sensor_types()
             .await
-            .map_err(|e| e.to_string())
+            .map_err(|e| async_graphql::Error::new(e.to_string()))?;
+        Ok(rows.into_iter().map(SensorTypeGql).collect())
     }
 
-    async fn list_readings(context: &Context, #[graphql(default = 20)] limit: i32, #[graphql(default = 0)] offset: i32) -> Result<Vec<Reading>, String> {
-        if limit < 1 || limit > 100 {
-            return Err("limit must be between 1 and 100".to_string());
+    /// List measurements with pagination. Clients pick exactly the fields they
+    /// need, so a "give me only id + measuredAt" query avoids over-fetching.
+    async fn list_readings(
+        &self,
+        ctx: &Context<'_>,
+        #[graphql(default = 20)] limit: i32,
+        #[graphql(default = 0)] offset: i32,
+    ) -> async_graphql::Result<Vec<ReadingGql>> {
+        if !(1..=100).contains(&limit) {
+            return Err(async_graphql::Error::new("limit must be between 1 and 100"));
         }
         if offset < 0 {
-            return Err("offset must be >= 0".to_string());
+            return Err(async_graphql::Error::new("offset must be >= 0"));
         }
 
-        context.db
+        let db = ctx.data_unchecked::<Arc<DbPool>>();
+        let rows = db
             .list_readings(limit, offset)
             .await
-            .map_err(|e| e.to_string())
+            .map_err(|e| async_graphql::Error::new(e.to_string()))?;
+        Ok(rows.into_iter().map(ReadingGql).collect())
     }
 
-    async fn get_reading(context: &Context, id: i32) -> Result<Reading, String> {
-        context.db
-            .get_reading(id)
+    /// Fetch a single measurement by its composite id.
+    async fn get_reading(&self, ctx: &Context<'_>, id: i32) -> async_graphql::Result<ReadingGql> {
+        let db = ctx.data_unchecked::<Arc<DbPool>>();
+        let reading = db
+            .get_reading(id as i64)
             .await
-            .map_err(|e| e.to_string())
+            .map_err(|e| async_graphql::Error::new(e.to_string()))?;
+        Ok(ReadingGql(reading))
     }
 
+    /// Daily aggregates (avg/min/max/count) for one sensor over a date range.
     async fn aggregate_readings(
-        context: &Context,
+        &self,
+        ctx: &Context<'_>,
         sensor_code: String,
-        #[graphql(default = "2023-01-01T00:00:00Z")] start_date: String,
-        #[graphql(default)] end_date: Option<String>,
-    ) -> Result<Vec<AggregatePoint>, String> {
-        let start = DateTime::parse_from_rfc3339(&start_date)
-            .map_err(|_| "Invalid start_date format".to_string())?
-            .with_timezone(&Utc);
-
-        let end = if let Some(end_str) = end_date {
-            DateTime::parse_from_rfc3339(&end_str)
-                .map_err(|_| "Invalid end_date format".to_string())?
-                .with_timezone(&Utc)
-        } else {
-            Utc::now()
+        start_date: Option<String>,
+        end_date: Option<String>,
+    ) -> async_graphql::Result<Vec<AggregatePointGql>> {
+        let start = match start_date {
+            Some(value) => parse_rfc3339("start_date", &value)?,
+            None => parse_rfc3339("start_date", "2004-01-01T00:00:00Z")?,
+        };
+        let end = match end_date {
+            Some(value) => parse_rfc3339("end_date", &value)?,
+            None => Utc::now(),
         };
 
-        context.db
+        let db = ctx.data_unchecked::<Arc<DbPool>>();
+        let rows = db
             .aggregate_readings(&sensor_code, start, end)
             .await
-            .map_err(|e| e.to_string())
+            .map_err(|e| async_graphql::Error::new(e.to_string()))?;
+        Ok(rows.into_iter().map(AggregatePointGql).collect())
     }
 }
 
-pub struct Mutation;
+pub struct MutationRoot;
 
-#[graphql_object(context = Context)]
-impl Mutation {
+#[Object]
+impl MutationRoot {
+    /// Ingest a single measurement for an existing device + sensor code.
     async fn create_reading(
-        context: &Context,
+        &self,
+        ctx: &Context<'_>,
         device_id: String,
         sensor_code: String,
         measured_value: f64,
-        #[graphql(default)] measured_at: Option<String>,
-    ) -> Result<Reading, String> {
-        let measured_at = if let Some(dt_str) = measured_at {
-            DateTime::parse_from_rfc3339(&dt_str)
-                .map_err(|_| "Invalid measured_at format".to_string())?
-                .with_timezone(&Utc)
-        } else {
-            Utc::now()
+        measured_at: Option<String>,
+    ) -> async_graphql::Result<ReadingGql> {
+        let measured_at = match measured_at {
+            Some(value) => parse_rfc3339("measured_at", &value)?,
+            None => Utc::now(),
         };
 
-        context.db
+        let db = ctx.data_unchecked::<Arc<DbPool>>();
+        let reading = db
             .create_reading(&device_id, &sensor_code, measured_value, measured_at)
             .await
-            .map_err(|e| e.to_string())
+            .map_err(|e| async_graphql::Error::new(e.to_string()))?;
+        Ok(ReadingGql(reading))
     }
 }
 
-pub type Schema = RootNode<'static, Query, Mutation>;
+pub type AppSchema = Schema<QueryRoot, MutationRoot, EmptySubscription>;

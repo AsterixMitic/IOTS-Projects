@@ -51,20 +51,35 @@ bash db/import_via_copy.sh path/to/AirQualityUCI.csv
 
 # Architecture Overview
 
-Target architecture consists of three independent microservices:
+Three independent microservices expose the **same five operations** over one
+shared PostgreSQL database, each using a different communication protocol and
+technology stack. A metrics pipeline observes every container during load tests.
 
-```text
-Client
-   │
-   ├── REST API (C# / ASP.NET Core)
-   │
-   ├── gRPC Service (Go)
-   │
-   └── GraphQL API (Rust)
+```mermaid
+flowchart LR
+    Client["Clients<br/>k6 · Postman · browser"]
+
+    Client -->|JSON / HTTP| REST["REST API<br/>C# / ASP.NET Core<br/>:5000"]
+    Client -->|Protobuf / HTTP2| GRPC["gRPC Service<br/>Go<br/>:50051"]
+    Client -->|GraphQL / HTTP| GQL["GraphQL API<br/>Rust · async-graphql<br/>:8000"]
+
+    REST --> PG[("PostgreSQL 16<br/>normalized IoT schema<br/>:5432")]
+    GRPC --> PG
+    GQL --> PG
+
+    subgraph obs["Observability"]
+        EXP["docker-stats-exporter"] --> PROM["Prometheus"] --> GRAF["Grafana"]
+    end
+    PG -.metrics.-> obs
+    REST -.metrics.-> obs
+    GRPC -.metrics.-> obs
+    GQL -.metrics.-> obs
 ```
 
-Each service exposes similar business functionality while using a different communication protocol and technology stack.
-At the current stage, the REST service is implemented first and wired to PostgreSQL.
+Each service exposes equivalent business functionality (list sensor types, list
+readings, get by id, create reading, aggregate) while differing only at the
+transport/serialization edge. Detailed diagrams — ER model, per-protocol data
+flow, and scenario sequences — are in [`docs/architecture.md`](docs/architecture.md).
 
 ---
 
@@ -312,13 +327,26 @@ They target the live compose services by default:
 - GraphQL: `http://host.docker.internal:8000/graphql`
 - gRPC: `host.docker.internal:50051`
 
-You can override them with `REST_BASE_URL`, `GRAPHQL_URL`, `GRPC_ADDR`, `LOADTEST_RATE`, and `LOADTEST_DURATION`.
+Each script sweeps the assignment's **10 / 100 / 500 virtual users** via the `VUS`
+env var (`constant-vus` executor). Key env vars:
 
-Example:
+- `VUS` — virtual users (10, 100, 500). `DURATION` — hold time (e.g. `12s`).
+- `PROTOCOL` — `rest` | `grpc` | `graphql` | `all` (default `all`, runs the three
+  concurrently; set one value to isolate a protocol for clean metrics).
+- `REST_BASE_URL`, `GRAPHQL_URL`, `GRPC_ADDR`, `GRPC_PROTO_DIR` — endpoint overrides.
+
+Example (selective monitoring, gRPC only, 100 VUs):
 
 ```bash
-docker run --rm -i -v "$(pwd):/work" -w /work grafana/k6 run load-tests/k6/01-ingestion.js
+docker run --rm -v "$(pwd):/work" -w /work \
+  -e VUS=100 -e DURATION=12s -e PROTOCOL=grpc \
+  -e GRPC_PROTO_DIR=/work/grpc-service-go/proto \
+  grafana/k6 run --summary-export=/work/load-tests/results/out.json \
+  load-tests/k6/02-selective-monitoring.js
 ```
+
+Measured results (latency, p95, RPS, CPU/RAM, payload sizes) are in
+[`docs/benchmarks.md`](docs/benchmarks.md).
 
 ---
 

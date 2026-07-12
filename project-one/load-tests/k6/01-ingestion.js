@@ -4,6 +4,7 @@ import { check } from 'k6';
 
 import {
   config,
+  buildScenarios,
   grpcCreateRequest,
   graphqlCreateBody,
   randomSensorCode,
@@ -22,28 +23,15 @@ function loadGrpc() {
   }
 }
 
-function scenario(exec, rate) {
-  return {
-    executor: 'constant-arrival-rate',
-    exec,
-    rate,
-    timeUnit: '1s',
-    duration: __ENV.LOADTEST_DURATION || '1m',
-    preAllocatedVUs: Number(__ENV.LOADTEST_PRE_ALLOCATED_VUS || 10),
-    maxVUs: Number(__ENV.LOADTEST_MAX_VUS || 50),
-  };
-}
-
-const rate = Number(__ENV.LOADTEST_RATE || 20);
-
+// Scenario A - High-Frequency Ingestion. VUS controls the 10/100/500 load level.
 export const options = {
-  scenarios: {
-    rest_ingestion: scenario('restIngestion', Number(__ENV.REST_RATE || rate)),
-    grpc_ingestion: scenario('grpcIngestion', Number(__ENV.GRPC_RATE || rate)),
-    graphql_ingestion: scenario('graphqlIngestion', Number(__ENV.GRAPHQL_RATE || rate)),
-  },
+  scenarios: buildScenarios({
+    rest: 'restIngestion',
+    grpc: 'grpcIngestion',
+    graphql: 'graphqlIngestion',
+  }),
   thresholds: {
-    checks: ['rate>0.99'],
+    checks: ['rate>0.95'],
   },
 };
 

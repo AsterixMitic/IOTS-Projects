@@ -11,7 +11,47 @@ export const config = {
     .map((value) => value.trim().toLowerCase())
     .filter(Boolean),
   historicalSensorCode: (__ENV.HISTORICAL_SENSOR_CODE || 'temperature').trim().toLowerCase(),
+  // The UCI Air Quality dataset covers 2004-03-10 .. 2005-04-04, so historical
+  // queries must target that window (not "now") or they come back empty.
+  historicalFrom: __ENV.LOADTEST_HISTORICAL_FROM || '2004-03-10T00:00:00Z',
+  historicalTo: __ENV.LOADTEST_HISTORICAL_TO || '2005-04-05T00:00:00Z',
 };
+
+// --- Load-profile helpers ------------------------------------------------
+// The assignment requires simulating 10 / 100 / 500 virtual users. We use the
+// constant-vus executor so `VUS` maps 1:1 to concurrent virtual users; RPS then
+// emerges as an output metric (http_reqs / grpc_reqs rate).
+export const load = {
+  vus: Number(__ENV.VUS || 10),
+  duration: __ENV.DURATION || '30s',
+  // 'all' runs every protocol concurrently; set PROTOCOL=rest|grpc|graphql to
+  // isolate one protocol for a clean, contention-free comparison.
+  protocol: (__ENV.PROTOCOL || 'all').toLowerCase(),
+};
+
+export function protocolEnabled(name) {
+  return load.protocol === 'all' || load.protocol === name;
+}
+
+export function vusScenario(exec) {
+  return {
+    executor: 'constant-vus',
+    exec,
+    vus: load.vus,
+    duration: load.duration,
+  };
+}
+
+// execByProtocol: { rest: 'restFn', grpc: 'grpcFn', graphql: 'graphqlFn' }
+export function buildScenarios(execByProtocol) {
+  const scenarios = {};
+  for (const [protocol, exec] of Object.entries(execByProtocol)) {
+    if (protocolEnabled(protocol)) {
+      scenarios[`${protocol}_${exec}`] = vusScenario(exec);
+    }
+  }
+  return scenarios;
+}
 
 export const sensorCodes = [
   'co_gt',
